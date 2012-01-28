@@ -1,17 +1,19 @@
 {
   "name": "fs2http",
-  "description": "Sinatra inspired web development framework",
+  "description": "Creates Express routes to make filesystem manipulation possible",
   "version": "0.0.1",
   "author": "Charles Bourasseau <charles.bourasseau@gmail.com>",
   "contributors": [
   ],
   "dependencies": {
-      "async": "0.1.15"
+      "async": ">= 0.1.15"
   },
   "devDependencies": {
       "api-easy": ">= 0.3.2",
       "wrench" : ">= 1.3.5"
   },
+  "keywords": ["fs2http", "filesystem", "http", "web", "route"],
+  "repository": "git@github.com:cbou/fs2http.git",
   "main": "index",
-  "engines": { "node": ">= 0.4.1 < 0.7.0" }
+  "engines": { "node": ">= 0.6.8 < 0.7.0" }
 }
