@@ -6,7 +6,8 @@ wrench = require('wrench')
 path = require 'path'
 require './server'
 
-wrench.rmdirSyncRecursive '/tmp/fs2http'
+if path.existsSync '/tmp/fs2http'
+  wrench.rmdirSyncRecursive '/tmp/fs2http'
 fs.mkdirSync '/tmp/fs2http'
 
 fs.mkdirSync '/tmp/fs2http/stat'
