@@ -1,4 +1,4 @@
-fs2http
+fs2http [![Build Status](https://secure.travis-ci.org/cbou/fs2http.png)](http://travis-ci.org/cbou/fs2http)
 ==========
 
 This module creates [Express] routes to make filesystem manipulation possible.
