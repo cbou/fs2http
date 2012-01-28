@@ -11,7 +11,8 @@
   "devDependencies": {
       "api-easy": ">= 0.3.2",
       "wrench" : ">= 1.3.5",
-      "express": ">= 2.5.4"
+      "express": ">= 2.5.4",
+      "vows": "*"
   },
   "keywords": ["fs2http", "filesystem", "http", "web", "route"],
   "repository": {
