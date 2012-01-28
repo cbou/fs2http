@@ -14,8 +14,12 @@
       "express": ">= 2.5.4"
   },
   "keywords": ["fs2http", "filesystem", "http", "web", "route"],
-  "repository": "git@github.com:cbou/fs2http.git",
+  "repository": {
+    "type": "git",
+    "url": "git@github.com:cbou/fs2http.git"
+  },
   "main": "index",
+  "license": "MIT",
   "scripts": { "test": "vows test/*-test.js --spec" },
   "engines": { "node": ">= 0.6.8 < 0.7.0" }
 }
