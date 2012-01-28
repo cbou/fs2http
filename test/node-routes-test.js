@@ -5,13 +5,15 @@
 
   assert = require("assert");
 
-  suite = APIeasy.describe("your/awesome/api");
+  suite = APIeasy.describe("fs2http: Node routes");
 
   fs = require('fs');
 
   wrench = require('wrench');
 
   path = require('path');
+
+  require('./server');
 
   wrench.rmdirSyncRecursive('/tmp/fs2http');
 
@@ -43,8 +45,8 @@
     path: '/tmp/fs2http/chmod',
     mode: '0777'
   }).expect('chmod route', 200, function(err, res, body) {
-    assert.equal(JSON.parse(body)['success'], true);
-    assert.equal(JSON.parse(body)['error'].length, 0);
+    assert.isTrue(JSON.parse(body)['success']);
+    assert.isEmpty(JSON.parse(body)['error']);
     return fs.stat('/tmp/fs2http/chmod', function(err, stats) {
       return assert.equal(stats['mode'], 16895);
     });
@@ -53,16 +55,16 @@
     uid: fs.statSync('/tmp/fs2http/chown')['uid'],
     gid: 1000
   }).expect('chown route', 200, function(err, res, body) {
-    assert.equal(JSON.parse(body)['success'], true);
-    assert.equal(JSON.parse(body)['error'].length, 0);
+    assert.isTrue(JSON.parse(body)['success']);
+    assert.isEmpty(JSON.parse(body)['error']);
     return fs.stat('/tmp/fs2http/chown', function(err, stats) {
       return assert.equal(stats['gid'], 1000);
     });
   }).post('/fs2http/mkdir', {
     path: '/tmp/fs2http/mkdir'
   }).expect('mkdir route', 200, function(err, res, body) {
-    assert.equal(JSON.parse(body)['success'], true);
-    assert.equal(JSON.parse(body)['error'].length, 0);
+    assert.isTrue(JSON.parse(body)['success']);
+    assert.isEmpty(JSON.parse(body)['error']);
     return path.exists('/tmp/fs2http/mkdir', function(exists) {
       return assert.ok(exists);
     });
@@ -70,27 +72,27 @@
     filename: '/tmp/fs2http/readFile/empty',
     encoding: 'utf-8'
   }).expect('readFile route, with empty file', 200, function(err, res, body) {
-    assert.equal(JSON.parse(body)['success'], true);
-    assert.equal(JSON.parse(body)['error'].length, 0);
-    return assert.equal(JSON.parse(body)['data'], '');
+    assert.isTrue(JSON.parse(body)['success']);
+    assert.isEmpty(JSON.parse(body)['error']);
+    return assert.isEmpty(JSON.parse(body)['data']);
   }).get('/fs2http/readFile', {
     filename: '/tmp/fs2http/readFile/file',
     encoding: 'utf-8'
   }).expect('readFile route, with non-empty file', 200, function(err, res, body) {
-    assert.equal(JSON.parse(body)['success'], true);
-    assert.equal(JSON.parse(body)['error'].length, 0);
+    assert.isTrue(JSON.parse(body)['success']);
+    assert.isEmpty(JSON.parse(body)['error']);
     return assert.equal(JSON.parse(body)['data'], 'file');
   }).post('/fs2http/rename', {
     path1: '/tmp/fs2http/rename/file',
     path2: '/tmp/fs2http/rename/file2'
   }).expect('rename route', 200, function(err, res, body) {
-    assert.equal(JSON.parse(body)['success'], true);
-    assert.equal(JSON.parse(body)['error'].length, 0);
+    assert.isTrue(JSON.parse(body)['success']);
+    assert.isEmpty(JSON.parse(body)['error']);
     path.exists('/tmp/fs2http/rename/file1', function(exists) {
-      return assert.ok(!exists);
+      return assert.isFalse(exists);
     });
     return path.exists('/tmp/fs2http/rename/file2', function(exists) {
-      return assert.ok(exists);
+      return assert.isTrue(exists);
     });
   }).post('/fs2http/rename', {
     path1: '/tmp/fs2http/rename/file',
@@ -101,10 +103,10 @@
   }).del('/fs2http/rmdir', {
     path: '/tmp/fs2http/rmdir'
   }).expect('rmdir route', 200, function(err, res, body) {
-    assert.equal(JSON.parse(body)['success'], true);
-    assert.equal(JSON.parse(body)['error'].length, 0);
+    assert.isTrue(JSON.parse(body)['success']);
+    assert.isEmpty(JSON.parse(body)['error']);
     return path.exists('/tmp/fs2http/rmdir', function(exists) {
-      return assert.ok(!exists);
+      return assert.isFalse(exists);
     });
   }).del('/fs2http/rmdir', {
     path: '/tmp/fs2http/nonexisting'
@@ -114,16 +116,16 @@
   }).get('/fs2http/stat', {
     path: '/tmp/fs2http/stat'
   }).expect('stat route', 200, function(err, res, body) {
-    assert.equal(JSON.parse(body)['success'], true);
-    assert.equal(JSON.parse(body)['error'].length, 0);
+    assert.isTrue(JSON.parse(body)['success']);
+    assert.isEmpty(JSON.parse(body)['error']);
     return assert.ok(JSON.parse(body)['stats']);
   }).post('/fs2http/utimes', {
     path: '/tmp/fs2http/utimes',
     atime: 104321,
     mtime: 654231
   }).expect('utimes route', 200, function(err, res, body) {
-    assert.equal(JSON.parse(body)['success'], true);
-    assert.equal(JSON.parse(body)['error'].length, 0);
+    assert.isTrue(JSON.parse(body)['success']);
+    assert.isEmpty(JSON.parse(body)['error']);
     return fs.stat('/tmp/fs2http/utimes', function(err, stats) {
       assert.equal(stats['atime'].getTime() / 1000, 104321);
       return assert.equal(stats['mtime'].getTime() / 1000, 654231);
@@ -132,8 +134,8 @@
     filename: '/tmp/fs2http/writeFile/file',
     data: 'file'
   }).expect('writeFile route, with data', 200, function(err, res, body) {
-    assert.equal(JSON.parse(body)['success'], true);
-    assert.equal(JSON.parse(body)['error'].length, 0);
+    assert.isTrue(JSON.parse(body)['success']);
+    assert.isEmpty(JSON.parse(body)['error']);
     return fs.readFile('/tmp/fs2http/writeFile/file', 'utf-8', function(err, data) {
       return assert.equal(data, 'file');
     });
@@ -141,15 +143,13 @@
     filename: '/tmp/fs2http/writeFile/empty',
     data: ''
   }).expect('writeFile route, empty data', 200, function(err, res, body) {
-    assert.equal(JSON.parse(body)['success'], true);
-    assert.equal(JSON.parse(body)['error'].length, 0);
+    assert.isTrue(JSON.parse(body)['success']);
+    assert.isEmpty(JSON.parse(body)['error']);
     return fs.readFile('/tmp/fs2http/writeFile/empty', 'utf-8', function(err, data) {
-      return assert.equal(data, '');
+      return assert.isEmpty(data);
     });
-  });
+  }).get('/stop').expect(200);
 
-  process.nextTick(function() {
-    return suite["export"](module);
-  });
+  suite["export"](module);
 
 }).call(this);

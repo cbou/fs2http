@@ -41,7 +41,7 @@ Running Tests
 
 Run tests:
 
-    node test/node-routes-test.js
+    npm test
 
 License
 --------

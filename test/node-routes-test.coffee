@@ -1,9 +1,10 @@
 APIeasy = require("api-easy")
 assert = require("assert")
-suite = APIeasy.describe("your/awesome/api")
+suite = APIeasy.describe("fs2http: Node routes")
 fs = require('fs')
 wrench = require('wrench')
 path = require 'path'
+require './server'
 
 wrench.rmdirSyncRecursive '/tmp/fs2http'
 fs.mkdirSync '/tmp/fs2http'
@@ -31,8 +32,8 @@ suite.discuss("When trying fs2http node routes")
     path : '/tmp/fs2http/chmod'
     mode : '0777'
   .expect('chmod route', 200, (err, res, body) ->
-    assert.equal JSON.parse(body)['success'], true
-    assert.equal JSON.parse(body)['error'].length, 0
+    assert.isTrue JSON.parse(body)['success']
+    assert.isEmpty JSON.parse(body)['error']
 
     fs.stat '/tmp/fs2http/chmod', (err, stats) ->
       assert.equal stats['mode'], 16895
@@ -43,8 +44,8 @@ suite.discuss("When trying fs2http node routes")
     uid : fs.statSync('/tmp/fs2http/chown')['uid']
     gid : 1000
   .expect('chown route', 200, (err, res, body) ->
-    assert.equal JSON.parse(body)['success'], true
-    assert.equal JSON.parse(body)['error'].length, 0
+    assert.isTrue JSON.parse(body)['success']
+    assert.isEmpty JSON.parse(body)['error']
 
     fs.stat '/tmp/fs2http/chown', (err, stats) ->
       assert.equal stats['gid'], 1000
@@ -53,8 +54,8 @@ suite.discuss("When trying fs2http node routes")
   .post '/fs2http/mkdir',
     path : '/tmp/fs2http/mkdir'
   .expect('mkdir route', 200, (err, res, body) ->
-    assert.equal JSON.parse(body)['success'], true
-    assert.equal JSON.parse(body)['error'].length, 0
+    assert.isTrue JSON.parse(body)['success']
+    assert.isEmpty JSON.parse(body)['error']
     
     path.exists '/tmp/fs2http/mkdir', (exists) ->
       assert.ok exists
@@ -64,17 +65,17 @@ suite.discuss("When trying fs2http node routes")
     filename : '/tmp/fs2http/readFile/empty'
     encoding : 'utf-8'
   .expect('readFile route, with empty file', 200, (err, res, body) ->
-    assert.equal JSON.parse(body)['success'], true
-    assert.equal JSON.parse(body)['error'].length, 0
-    assert.equal JSON.parse(body)['data'], ''
+    assert.isTrue JSON.parse(body)['success']
+    assert.isEmpty JSON.parse(body)['error']
+    assert.isEmpty JSON.parse(body)['data']
   )
 
   .get '/fs2http/readFile',
     filename : '/tmp/fs2http/readFile/file'
     encoding : 'utf-8'
   .expect('readFile route, with non-empty file', 200, (err, res, body) ->
-    assert.equal JSON.parse(body)['success'], true
-    assert.equal JSON.parse(body)['error'].length, 0
+    assert.isTrue JSON.parse(body)['success']
+    assert.isEmpty JSON.parse(body)['error']
     assert.equal JSON.parse(body)['data'], 'file'
   )
 
@@ -82,14 +83,14 @@ suite.discuss("When trying fs2http node routes")
     path1 : '/tmp/fs2http/rename/file'
     path2 : '/tmp/fs2http/rename/file2'
   .expect('rename route', 200, (err, res, body) ->
-    assert.equal JSON.parse(body)['success'], true
-    assert.equal JSON.parse(body)['error'].length, 0
+    assert.isTrue JSON.parse(body)['success']
+    assert.isEmpty JSON.parse(body)['error']
 
     path.exists '/tmp/fs2http/rename/file1', (exists) ->
-      assert.ok !exists
+      assert.isFalse exists
 
     path.exists '/tmp/fs2http/rename/file2', (exists) ->
-      assert.ok exists
+      assert.isTrue exists
   )
 
   .post '/fs2http/rename',
@@ -103,11 +104,11 @@ suite.discuss("When trying fs2http node routes")
   .del '/fs2http/rmdir',
     path : '/tmp/fs2http/rmdir'
   .expect('rmdir route', 200, (err, res, body) ->
-    assert.equal JSON.parse(body)['success'], true
-    assert.equal JSON.parse(body)['error'].length, 0
+    assert.isTrue JSON.parse(body)['success']
+    assert.isEmpty JSON.parse(body)['error']
 
     path.exists '/tmp/fs2http/rmdir', (exists) ->
-      assert.ok !exists
+      assert.isFalse exists
   )
 
   .del '/fs2http/rmdir',
@@ -120,8 +121,8 @@ suite.discuss("When trying fs2http node routes")
   .get '/fs2http/stat',
     path : '/tmp/fs2http/stat'
   .expect('stat route', 200, (err, res, body) ->
-    assert.equal JSON.parse(body)['success'], true
-    assert.equal JSON.parse(body)['error'].length, 0
+    assert.isTrue JSON.parse(body)['success']
+    assert.isEmpty JSON.parse(body)['error']
     assert.ok JSON.parse(body)['stats']
   )
 
@@ -130,8 +131,8 @@ suite.discuss("When trying fs2http node routes")
     atime : 104321
     mtime : 654231
   .expect('utimes route', 200, (err, res, body) ->
-    assert.equal JSON.parse(body)['success'], true
-    assert.equal JSON.parse(body)['error'].length, 0
+    assert.isTrue JSON.parse(body)['success']
+    assert.isEmpty JSON.parse(body)['error']
 
     fs.stat '/tmp/fs2http/utimes', (err, stats) ->
       assert.equal stats['atime'].getTime() / 1000, 104321
@@ -142,8 +143,8 @@ suite.discuss("When trying fs2http node routes")
     filename : '/tmp/fs2http/writeFile/file'
     data : 'file'
   .expect('writeFile route, with data', 200, (err, res, body) ->
-    assert.equal JSON.parse(body)['success'], true
-    assert.equal JSON.parse(body)['error'].length, 0
+    assert.isTrue JSON.parse(body)['success']
+    assert.isEmpty JSON.parse(body)['error']
 
     fs.readFile '/tmp/fs2http/writeFile/file', 'utf-8', (err, data) ->
       assert.equal data, 'file'
@@ -153,13 +154,15 @@ suite.discuss("When trying fs2http node routes")
     filename : '/tmp/fs2http/writeFile/empty'
     data : ''
   .expect('writeFile route, empty data', 200, (err, res, body) ->
-    assert.equal JSON.parse(body)['success'], true
-    assert.equal JSON.parse(body)['error'].length, 0
+    assert.isTrue JSON.parse(body)['success']
+    assert.isEmpty JSON.parse(body)['error']
 
     fs.readFile '/tmp/fs2http/writeFile/empty', 'utf-8', (err, data) ->
-      assert.equal data, ''
+      assert.isEmpty data
   )
 
+  # stop the server.
+  .get('/stop')
+  .expect 200
 
-process.nextTick ->
-  suite.export module
+suite.export module
