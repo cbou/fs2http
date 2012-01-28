@@ -26,12 +26,6 @@ fs.mkdirSync '/tmp/fs2http/writeFile'
 suite.discuss("When trying fs2http node routes")
   .use("localhost", 3000)
   .setHeader("Content-Type", "application/json")
-  
-  .get('/')
-  .expect(200)
-
-  .get('/unknow')
-  .expect(404)
 
   .post '/fs2http/chmod',
     path : '/tmp/fs2http/chmod'
