@@ -31,6 +31,12 @@
 
   fs.writeFileSync('/tmp/fs2http/readFile/file', 'file');
 
+  fs.mkdirSync('/tmp/fs2http/readdir');
+
+  fs.writeFileSync('/tmp/fs2http/readdir/empty', '');
+
+  fs.writeFileSync('/tmp/fs2http/readdir/file', 'file');
+
   fs.mkdirSync('/tmp/fs2http/rename');
 
   fs.writeFileSync('/tmp/fs2http/rename/file', '');
@@ -82,6 +88,12 @@
     assert.isTrue(JSON.parse(body)['success']);
     assert.isEmpty(JSON.parse(body)['error']);
     return assert.equal(JSON.parse(body)['data'], 'file');
+  }).get('/fs2http/readdir', {
+    path: '/tmp/fs2http/readdir'
+  }).expect('readdir route, with non-empty file', 200, function(err, res, body) {
+    assert.isTrue(JSON.parse(body)['success']);
+    assert.isEmpty(JSON.parse(body)['error']);
+    return assert.equal(JSON.parse(body)['files'].length, 2);
   }).post('/fs2http/rename', {
     path1: '/tmp/fs2http/rename/file',
     path2: '/tmp/fs2http/rename/file2'

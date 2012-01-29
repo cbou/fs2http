@@ -13,10 +13,14 @@ fs.mkdirSync '/tmp/fs2http'
 fs.mkdirSync '/tmp/fs2http/stat'
 fs.mkdirSync '/tmp/fs2http/chmod'
 fs.mkdirSync '/tmp/fs2http/chown'
-fs.mkdirSync '/tmp/fs2http/readFile'
 
+fs.mkdirSync '/tmp/fs2http/readFile'
 fs.writeFileSync '/tmp/fs2http/readFile/empty', ''
 fs.writeFileSync '/tmp/fs2http/readFile/file', 'file'
+
+fs.mkdirSync '/tmp/fs2http/readdir'
+fs.writeFileSync '/tmp/fs2http/readdir/empty', ''
+fs.writeFileSync '/tmp/fs2http/readdir/file', 'file'
 
 fs.mkdirSync '/tmp/fs2http/rename'
 fs.writeFileSync '/tmp/fs2http/rename/file', ''
@@ -24,6 +28,7 @@ fs.writeFileSync '/tmp/fs2http/rename/file', ''
 fs.mkdirSync '/tmp/fs2http/rmdir'
 fs.mkdirSync '/tmp/fs2http/utimes'
 fs.mkdirSync '/tmp/fs2http/writeFile'
+
 
 suite.discuss("When trying fs2http node routes")
   .use("localhost", 3000)
@@ -78,6 +83,16 @@ suite.discuss("When trying fs2http node routes")
     assert.isTrue JSON.parse(body)['success']
     assert.isEmpty JSON.parse(body)['error']
     assert.equal JSON.parse(body)['data'], 'file'
+  )
+
+  .get '/fs2http/readdir',
+    path : '/tmp/fs2http/readdir'
+  .expect('readdir route, with non-empty file', 200, (err, res, body) ->
+    assert.isTrue JSON.parse(body)['success']
+    assert.isEmpty JSON.parse(body)['error']
+    assert.equal JSON.parse(body)['files'].length, 2
+    assert.include (JSON.parse(body)['files'], 'empty');
+    assert.include (JSON.parse(body)['files'], 'file');
   )
 
   .post '/fs2http/rename',
