@@ -23,9 +23,14 @@ fs.writeFileSync '/tmp/fs2http/readdir/empty', ''
 fs.writeFileSync '/tmp/fs2http/readdir/file', 'file'
 
 fs.mkdirSync '/tmp/fs2http/rename'
-fs.writeFileSync '/tmp/fs2http/rename/file', ''
+fs.writeFileSync '/tmp/fs2http/rename/file', 'file'
 
 fs.mkdirSync '/tmp/fs2http/rmdir'
+fs.mkdirSync '/tmp/fs2http/rmdir/empty'
+fs.mkdirSync '/tmp/fs2http/rmdir/nonempty'
+fs.mkdirSync '/tmp/fs2http/rmdir/nonempty/dir'
+fs.writeFileSync '/tmp/fs2http/rmdir/nonempty/file', 'file'
+
 fs.mkdirSync '/tmp/fs2http/utimes'
 fs.mkdirSync '/tmp/fs2http/writeFile'
 
@@ -67,6 +72,7 @@ suite.discuss("When trying fs2http node routes")
       assert.ok exists
   )
 
+  .discuss('with empty file')
   .get '/fs2http/readFile',
     filename : '/tmp/fs2http/readFile/empty'
     encoding : 'utf-8'
@@ -75,6 +81,7 @@ suite.discuss("When trying fs2http node routes")
     assert.isEmpty JSON.parse(body)['error']
     assert.isEmpty JSON.parse(body)['data']
   )
+  .undiscuss()
 
   .get '/fs2http/readFile',
     filename : '/tmp/fs2http/readFile/file'
@@ -91,10 +98,11 @@ suite.discuss("When trying fs2http node routes")
     assert.isTrue JSON.parse(body)['success']
     assert.isEmpty JSON.parse(body)['error']
     assert.equal JSON.parse(body)['files'].length, 2
-    assert.include (JSON.parse(body)['files'], 'empty');
-    assert.include (JSON.parse(body)['files'], 'file');
+    assert.include JSON.parse(body)['files'], 'empty'
+    assert.include JSON.parse(body)['files'], 'file'
   )
 
+  .discuss('with non empty directory')
   .post '/fs2http/rename',
     path1 : '/tmp/fs2http/rename/file'
     path2 : '/tmp/fs2http/rename/file2'
@@ -108,31 +116,46 @@ suite.discuss("When trying fs2http node routes")
     path.exists '/tmp/fs2http/rename/file2', (exists) ->
       assert.isTrue exists
   )
+  .undiscuss()
 
   .post '/fs2http/rename',
     path1 : '/tmp/fs2http/rename/file'
     path2 : '/dev/null'
   .expect('rename route, with non existing file', 200, (err, res, body) ->
-    assert.equal JSON.parse(body)['success'], false
+    assert.isFalse JSON.parse(body)['success']
     assert.equal JSON.parse(body)['error'].length, 1
   )
 
   .del '/fs2http/rmdir',
-    path : '/tmp/fs2http/rmdir'
+    path : '/tmp/fs2http/rmdir/empty'
   .expect('rmdir route', 200, (err, res, body) ->
     assert.isTrue JSON.parse(body)['success']
     assert.isEmpty JSON.parse(body)['error']
 
-    path.exists '/tmp/fs2http/rmdir', (exists) ->
+    path.exists '/tmp/fs2http/rmdir/empty', (exists) ->
       assert.isFalse exists
   )
 
+  .discuss('with non empty directory')
   .del '/fs2http/rmdir',
-    path : '/tmp/fs2http/nonexisting'
+    path : '/tmp/fs2http/rmdir/nonempty'
   .expect('rmdir route', 200, (err, res, body) ->
-    assert.equal JSON.parse(body)['success'], false
+    assert.isFalse JSON.parse(body)['success']
+    assert.equal JSON.parse(body)['error'].length, 1
+
+    path.exists '/tmp/fs2http/rmdir/nonempty', (exists) ->
+      assert.isTrue exists
+  )
+  .undiscuss()
+
+  .discuss('with non existing directory')
+  .del '/fs2http/rmdir',
+    path : '/tmp/fs2http/rmdir/nonexisting'
+  .expect('rmdir route', 200, (err, res, body) ->
+    assert.isFalse JSON.parse(body)['success']
     assert.equal JSON.parse(body)['error'].length, 1
   )
+  .undiscuss()
 
   .get '/fs2http/stat',
     path : '/tmp/fs2http/stat'
@@ -155,6 +178,7 @@ suite.discuss("When trying fs2http node routes")
       assert.equal stats['mtime'].getTime() / 1000, 654231
   )
 
+  .discuss('with empty data')
   .post '/fs2http/writeFile',
     filename : '/tmp/fs2http/writeFile/file'
     data : 'file'
@@ -165,6 +189,7 @@ suite.discuss("When trying fs2http node routes")
     fs.readFile '/tmp/fs2http/writeFile/file', 'utf-8', (err, data) ->
       assert.equal data, 'file'
   )
+  .undiscuss()
 
   .post '/fs2http/writeFile',
     filename : '/tmp/fs2http/writeFile/empty'
@@ -176,9 +201,5 @@ suite.discuss("When trying fs2http node routes")
     fs.readFile '/tmp/fs2http/writeFile/empty', 'utf-8', (err, data) ->
       assert.isEmpty data
   )
-
-  # stop the server.
-  .get('/stop')
-  .expect 200
 
 suite.export module

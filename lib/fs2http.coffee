@@ -50,7 +50,7 @@ fs2http.use = (app) ->
 	fs2http.app.post fs2http.options.path.chown, fs2http.routes.chown
 	fs2http.app.post fs2http.options.path.chmod, fs2http.routes.chmod
 	fs2http.app.get fs2http.options.path.stat, fs2http.routes.stat
-	fs2http.app.delete fs2http.options.path.rmdir, fs2http.routes.rmdir
+	fs2http.app.del fs2http.options.path.rmdir, fs2http.routes.rmdir
 	fs2http.app.post fs2http.options.path.mkdir, fs2http.routes.mkdir
 	fs2http.app.get fs2http.options.path.readdir, fs2http.routes.readdir
 	fs2http.app.post fs2http.options.path.utimes, fs2http.routes.utimes
