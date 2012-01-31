@@ -2,14 +2,14 @@ fs = require 'fs'
 utils = require '../utils'
 
 module.exports = (req, res) ->
-  filename = req.query.filename
+  path = req.query.path
   encoding = if req.query.encoding then req.query.encoding else null
 
   result = 
     error : []
     success : true
 
-  fs.readFile filename, encoding, (err, data) ->
+  fs.readFile path, encoding, (err, data) ->
     if err
       utils.errorToResult(result, err)
 

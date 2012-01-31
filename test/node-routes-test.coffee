@@ -74,7 +74,7 @@ suite.discuss("When trying fs2http node routes")
 
   .discuss('with empty file')
   .get '/fs2http/readFile',
-    filename : '/tmp/fs2http/readFile/empty'
+    path : '/tmp/fs2http/readFile/empty'
     encoding : 'utf-8'
   .expect('readFile route, with empty file', 200, (err, res, body) ->
     assert.isTrue JSON.parse(body)['success']
@@ -84,7 +84,7 @@ suite.discuss("When trying fs2http node routes")
   .undiscuss()
 
   .get '/fs2http/readFile',
-    filename : '/tmp/fs2http/readFile/file'
+    path : '/tmp/fs2http/readFile/file'
     encoding : 'utf-8'
   .expect('readFile route, with non-empty file', 200, (err, res, body) ->
     assert.isTrue JSON.parse(body)['success']
@@ -180,7 +180,7 @@ suite.discuss("When trying fs2http node routes")
 
   .discuss('with empty data')
   .post '/fs2http/writeFile',
-    filename : '/tmp/fs2http/writeFile/file'
+    path : '/tmp/fs2http/writeFile/file'
     data : 'file'
   .expect('writeFile route, with data', 200, (err, res, body) ->
     assert.isTrue JSON.parse(body)['success']
@@ -192,7 +192,7 @@ suite.discuss("When trying fs2http node routes")
   .undiscuss()
 
   .post '/fs2http/writeFile',
-    filename : '/tmp/fs2http/writeFile/empty'
+    path : '/tmp/fs2http/writeFile/empty'
     data : ''
   .expect('writeFile route, empty data', 200, (err, res, body) ->
     assert.isTrue JSON.parse(body)['success']

@@ -3,8 +3,8 @@ util = require 'util'
 async = require 'async'
 
 module.exports = (req, res) ->
-  dir = req.query['dir']
-  fs.readdir dir, (err, files) ->
+  path = req.query['path']
+  fs.readdir path, (err, files) ->
     
     if util.isArray files
       result = {}
@@ -14,7 +14,7 @@ module.exports = (req, res) ->
       result['errors'] = []
 
       async.forEach files, (file, callback) ->
-        result['files'][file] = fs.statSync dir + '/' + file
+        result['files'][file] = fs.statSync path + '/' + file
         , (err) ->
           result['success'] = true
           result['errors'] = [err]

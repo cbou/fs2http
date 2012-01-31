@@ -83,14 +83,14 @@
       return assert.ok(exists);
     });
   }).discuss('with empty file').get('/fs2http/readFile', {
-    filename: '/tmp/fs2http/readFile/empty',
+    path: '/tmp/fs2http/readFile/empty',
     encoding: 'utf-8'
   }).expect('readFile route, with empty file', 200, function(err, res, body) {
     assert.isTrue(JSON.parse(body)['success']);
     assert.isEmpty(JSON.parse(body)['error']);
     return assert.isEmpty(JSON.parse(body)['data']);
   }).undiscuss().get('/fs2http/readFile', {
-    filename: '/tmp/fs2http/readFile/file',
+    path: '/tmp/fs2http/readFile/file',
     encoding: 'utf-8'
   }).expect('readFile route, with non-empty file', 200, function(err, res, body) {
     assert.isTrue(JSON.parse(body)['success']);
@@ -161,7 +161,7 @@
       return assert.equal(stats['mtime'].getTime() / 1000, 654231);
     });
   }).discuss('with empty data').post('/fs2http/writeFile', {
-    filename: '/tmp/fs2http/writeFile/file',
+    path: '/tmp/fs2http/writeFile/file',
     data: 'file'
   }).expect('writeFile route, with data', 200, function(err, res, body) {
     assert.isTrue(JSON.parse(body)['success']);
@@ -170,7 +170,7 @@
       return assert.equal(data, 'file');
     });
   }).undiscuss().post('/fs2http/writeFile', {
-    filename: '/tmp/fs2http/writeFile/empty',
+    path: '/tmp/fs2http/writeFile/empty',
     data: ''
   }).expect('writeFile route, empty data', 200, function(err, res, body) {
     assert.isTrue(JSON.parse(body)['success']);
