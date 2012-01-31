@@ -13,13 +13,8 @@
 
   fs2http.use(app);
 
-  app.get('/stop', function(req, res) {
-    res.end();
-    return app.close();
-  });
+  module["export"] = app;
 
   app.listen(3000);
-
-  module["export"] = app;
 
 }).call(this);

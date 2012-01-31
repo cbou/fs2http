@@ -11,5 +11,10 @@ module.exports.utimes = require './utimes'
 module.exports.readFile = require './readFile'
 module.exports.writeFile = require './writeFile'
 
+# recursive routes
+module.exports.chownRec = require './chownRec'
+module.exports.chmodRec = require './chmodRec'
+module.exports.rmdirRec = require './rmdirRec'
+
 # custom
 module.exports.ls = require './ls'

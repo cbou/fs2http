@@ -21,6 +21,11 @@ fs2http.options = {
 		'readFile' : '/fs2http/readFile'
 		'writeFile' : '/fs2http/writeFile'
 
+		# recursive routes
+		'chownRec' : '/fs2http/chownRec'
+		'chmodRec' : '/fs2http/chmodRec'
+		'rmdirRec' : '/fs2http/rmdirRec'
+
 		# custom
 		'ls' : '/fs2http/ls'
 
@@ -57,9 +62,14 @@ fs2http.use = (app) ->
 	fs2http.app.get fs2http.options.path.readFile, fs2http.routes.readFile
 	fs2http.app.post fs2http.options.path.writeFile, fs2http.routes.writeFile
 
+	# recursive routes
+	fs2http.app.post fs2http.options.path.chownRec, fs2http.routes.chownRec
+	fs2http.app.post fs2http.options.path.chmodRec, fs2http.routes.chmodRec
+	fs2http.app.del fs2http.options.path.rmdirRec, fs2http.routes.rmdirRec
+
 	# custom
 	fs2http.app.get fs2http.options.path.ls, fs2http.routes.ls
-
+	
 	fs2http
 
 exports = module.exports = fs2http;

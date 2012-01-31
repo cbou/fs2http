@@ -7,10 +7,6 @@ app.configure ->
 
 fs2http.use app
 
-app.get '/stop', (req, res) ->
-  res.end()
-  app.close()
+module.export = app
 
 app.listen 3000
-
-module.export = app
