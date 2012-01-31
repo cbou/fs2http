@@ -20,6 +20,7 @@ module.exports.exists = require './exists'
 module.exports.chownRec = require './chownRec'
 module.exports.chmodRec = require './chmodRec'
 module.exports.rmRec = require './rmRec'
+module.exports.copyRec = require './copyRec'
 
 # custom
 module.exports.ls = require './ls'

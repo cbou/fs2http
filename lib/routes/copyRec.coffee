@@ -4,27 +4,27 @@ wrench = require 'wrench'
 
 module.exports = (req, res) ->
   path = req.body.path
+  newpath = req.body.newpath
 
   result = {}
 
-  fs.lstat path, (err,stats) ->
+  fs.stat path, (err,stats) ->
     if err 
       utils.errorToResult(result, err, res)
-      res.send result
-      return;
 
     if stats && stats.isDirectory()
-      wrench.rmdirRecursive path, (err) ->
+      wrench.copyDirRecursive path, newpath, (err) ->
         if err
           utils.errorToResult(result, err, res)
         res.send result
-    else if stats && (stats.isFile() ||  stats.isSymbolicLink())
-      fs.unlink path, (err) ->
+
+    else if stats && stats.isFile()
+      utils.copyFile path, newpath, (err) ->
         if err
           utils.errorToResult(result, err, res)
         res.send result
-        
-    else
+
+    else 
       err = 
         code : 'NOTIMPL'
         message: 'function not implemented yet'

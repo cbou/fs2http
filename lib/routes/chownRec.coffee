@@ -13,6 +13,8 @@ module.exports = (req, res) ->
 
     if err 
       utils.errorToResult(result, err, res)
+      res.send result
+      return;
 
     if stats && stats.isDirectory()
       try 

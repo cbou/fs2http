@@ -34,4 +34,13 @@ utils.findValidGid = () ->
 
   currentGid
 
+utils.copyFile = (path, newpath, callback) ->
+  readStream = fs.createReadStream path
+  writeStream = fs.createWriteStream newpath
+
+  util.pump readStream, writeStream, (err) ->
+    callback err
+
+  null
+
 module.exports = utils

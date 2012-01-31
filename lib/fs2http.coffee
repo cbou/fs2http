@@ -29,6 +29,7 @@ fs2http.options = {
 		'chownRec' : '/fs2http/chownRec'
 		'chmodRec' : '/fs2http/chmodRec'
 		'rmRec' : '/fs2http/rmRec'
+		'copyRec' : '/fs2http/copyRec'
 
 		# custom
 		'ls' : '/fs2http/ls'
@@ -74,6 +75,7 @@ fs2http.use = (app) ->
 	fs2http.app.post fs2http.options.path.chownRec, fs2http.routes.chownRec
 	fs2http.app.post fs2http.options.path.chmodRec, fs2http.routes.chmodRec
 	fs2http.app.del fs2http.options.path.rmRec, fs2http.routes.rmRec
+	fs2http.app.post fs2http.options.path.copyRec, fs2http.routes.copyRec
 
 	# custom
 	fs2http.app.get fs2http.options.path.ls, fs2http.routes.ls
