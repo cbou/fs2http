@@ -15,6 +15,10 @@ utils.errorToResult = (result, err, res) ->
 
 utils.findValidGid = () ->
   _path = '/tmp/fs2http/findValidGid'
+
+  if !path.existsSync '/tmp/fs2http'
+    fs.mkdirSync '/tmp/fs2http'
+
   if path.existsSync _path
     fs.rmdirSync _path
     
