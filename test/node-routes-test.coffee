@@ -59,6 +59,11 @@ fs.symlinkSync prefixPath + '/readlink/dir', prefixPath + '/readlink/linkdir'
 fs.writeFileSync prefixPath + '/readlink/file', 'file'
 fs.symlinkSync prefixPath + '/readlink/file', prefixPath + '/readlink/linkfile'
 
+fs.mkdirSync prefixPath + '/exists'
+fs.mkdirSync prefixPath + '/exists/dir'
+fs.writeFileSync prefixPath + '/exists/file', 'file'
+fs.symlinkSync prefixPath + '/exists/dir', prefixPath + '/exists/linkdir'
+
 suite.discuss("When trying fs2http node routes")
   .use("localhost", 3000)
   .setHeader("Content-Type", "application/json")
@@ -281,6 +286,46 @@ suite.discuss("When trying fs2http node routes")
     path : prefixPath + '/readlink/linkfile'
   .expect('readlink route', 200, (err, res, body) ->
     assert.equal JSON.parse(body)['linkString'], prefixPath + '/readlink/file'
+  )
+  .undiscuss()
+
+  suite.discuss('readlink a file')
+  .get '/fs2http/readlink',
+    path : prefixPath + '/readlink/dir'
+  .expect('readlink route', 500, (err, res, body) ->
+    assert.equal JSON.parse(body)['error'].length, 1
+  )
+  .undiscuss()
+
+  suite.discuss('readlink a file')
+  .get '/fs2http/readlink',
+    path : prefixPath + '/readlink/file'
+  .expect('readlink route', 500, (err, res, body) ->
+    assert.equal JSON.parse(body)['error'].length, 1
+  )
+  .undiscuss()
+
+  suite.discuss('exists a file')
+  .get '/fs2http/exists',
+    path : prefixPath + '/exists/file'
+  .expect('exists route', 200, (err, res, body) ->
+    assert.isTrue JSON.parse(body)['exists']
+  )
+  .undiscuss()
+
+  suite.discuss('exists a dir')
+  .get '/fs2http/exists',
+    path : prefixPath + '/exists/dir'
+  .expect('exists route', 200, (err, res, body) ->
+    assert.isTrue JSON.parse(body)['exists']
+  )
+  .undiscuss()
+
+  suite.discuss('exists a linkdir')
+  .get '/fs2http/exists',
+    path : prefixPath + '/exists/linkdir'
+  .expect('exists route', 200, (err, res, body) ->
+    assert.isTrue JSON.parse(body)['exists']
   )
   .undiscuss()
 

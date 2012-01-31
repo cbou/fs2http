@@ -13,6 +13,7 @@ module.exports.writeFile = require './writeFile'
 module.exports.symlink = require './symlink'
 module.exports.unlink = require './unlink'
 module.exports.readlink = require './readlink'
+module.exports.exists = require './exists'
 
 
 # recursive routes

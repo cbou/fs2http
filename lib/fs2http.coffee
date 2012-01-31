@@ -23,6 +23,7 @@ fs2http.options = {
 		'symlink' : '/fs2http/symlink'
 		'unlink' : '/fs2http/unlink'
 		'readlink' : '/fs2http/readlink'
+		'exists' : '/fs2http/exists'
 
 		# recursive routes
 		'chownRec' : '/fs2http/chownRec'
@@ -67,6 +68,7 @@ fs2http.use = (app) ->
 	fs2http.app.post fs2http.options.path.symlink, fs2http.routes.symlink
 	fs2http.app.del fs2http.options.path.unlink, fs2http.routes.unlink
 	fs2http.app.get fs2http.options.path.readlink, fs2http.routes.readlink
+	fs2http.app.get fs2http.options.path.exists, fs2http.routes.exists
 
 	# recursive routes
 	fs2http.app.post fs2http.options.path.chownRec, fs2http.routes.chownRec
