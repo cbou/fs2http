@@ -10,6 +10,10 @@ module.exports.readdir = require './readdir'
 module.exports.utimes = require './utimes'
 module.exports.readFile = require './readFile'
 module.exports.writeFile = require './writeFile'
+module.exports.symlink = require './symlink'
+module.exports.unlink = require './unlink'
+module.exports.readlink = require './readlink'
+
 
 # recursive routes
 module.exports.chownRec = require './chownRec'

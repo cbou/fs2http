@@ -20,6 +20,9 @@ fs2http.options = {
 		'futimes' : '/fs2http/futimes'
 		'readFile' : '/fs2http/readFile'
 		'writeFile' : '/fs2http/writeFile'
+		'symlink' : '/fs2http/symlink'
+		'unlink' : '/fs2http/unlink'
+		'readlink' : '/fs2http/readlink'
 
 		# recursive routes
 		'chownRec' : '/fs2http/chownRec'
@@ -61,6 +64,9 @@ fs2http.use = (app) ->
 	fs2http.app.post fs2http.options.path.utimes, fs2http.routes.utimes
 	fs2http.app.get fs2http.options.path.readFile, fs2http.routes.readFile
 	fs2http.app.post fs2http.options.path.writeFile, fs2http.routes.writeFile
+	fs2http.app.post fs2http.options.path.symlink, fs2http.routes.symlink
+	fs2http.app.del fs2http.options.path.unlink, fs2http.routes.unlink
+	fs2http.app.get fs2http.options.path.readlink, fs2http.routes.readlink
 
 	# recursive routes
 	fs2http.app.post fs2http.options.path.chownRec, fs2http.routes.chownRec
