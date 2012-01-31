@@ -5,12 +5,10 @@ module.exports = (req, res) ->
   path = req.body.path
   mode = req.body.mode
 
-  result = 
-    error : []
-    success : true
+  result = {}
 
   fs.chmod path, mode, (err) ->
     if err
-      utils.errorToResult(result, err)
+      utils.errorToResult(result, err, res)
 
     res.send result

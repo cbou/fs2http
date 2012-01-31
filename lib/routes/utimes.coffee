@@ -6,12 +6,10 @@ module.exports = (req, res) ->
   atime = req.body.atime
   mtime = req.body.mtime
 
-  result = 
-    error : []
-    success : true
+  result = {}
 
   fs.utimes path, atime, mtime, (err) ->
     if err
-      utils.errorToResult(result, err)
+      utils.errorToResult(result, err, res)
 
     res.send result

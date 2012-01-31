@@ -6,12 +6,10 @@ module.exports = (req, res) ->
   data = req.body.data
   encoding = if req.body.encoding then req.body.encoding else undefined
 
-  result = 
-    error : []
-    success : true
+  result = {}
 
   fs.writeFile path, data, encoding, (err) ->
     if err
-      utils.errorToResult(result, err)
+      utils.errorToResult(result, err, res)
 
     res.send result

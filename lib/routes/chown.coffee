@@ -6,12 +6,10 @@ module.exports = (req, res) ->
   uid = req.body.uid
   gid = req.body.gid
   
-  result = 
-    error : []
-    success : true
+  result = {}
 
   fs.chown path, uid, gid, (err) ->
     if err
-      utils.errorToResult(result, err)
+      utils.errorToResult(result, err, res)
 
     res.send result
