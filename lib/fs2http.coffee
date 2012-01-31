@@ -24,7 +24,7 @@ fs2http.options = {
 		# recursive routes
 		'chownRec' : '/fs2http/chownRec'
 		'chmodRec' : '/fs2http/chmodRec'
-		'rmdirRec' : '/fs2http/rmdirRec'
+		'rmRec' : '/fs2http/rmRec'
 
 		# custom
 		'ls' : '/fs2http/ls'
@@ -65,7 +65,7 @@ fs2http.use = (app) ->
 	# recursive routes
 	fs2http.app.post fs2http.options.path.chownRec, fs2http.routes.chownRec
 	fs2http.app.post fs2http.options.path.chmodRec, fs2http.routes.chmodRec
-	fs2http.app.del fs2http.options.path.rmdirRec, fs2http.routes.rmdirRec
+	fs2http.app.del fs2http.options.path.rmRec, fs2http.routes.rmRec
 
 	# custom
 	fs2http.app.get fs2http.options.path.ls, fs2http.routes.ls

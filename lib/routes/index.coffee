@@ -14,7 +14,7 @@ module.exports.writeFile = require './writeFile'
 # recursive routes
 module.exports.chownRec = require './chownRec'
 module.exports.chmodRec = require './chmodRec'
-module.exports.rmdirRec = require './rmdirRec'
+module.exports.rmRec = require './rmRec'
 
 # custom
 module.exports.ls = require './ls'

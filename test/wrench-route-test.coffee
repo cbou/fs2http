@@ -17,12 +17,12 @@ if path.existsSync prefixPath
   wrench.rmdirSyncRecursive prefixPath
 fs.mkdirSync prefixPath
 
-fs.mkdirSync prefixPath + '/rmdirRec'
-fs.mkdirSync prefixPath + '/rmdirRec/empty'
-fs.mkdirSync prefixPath + '/rmdirRec/nonempty'
-fs.mkdirSync prefixPath + '/rmdirRec/nonempty/dir'
-fs.writeFileSync prefixPath + '/rmdirRec/nonempty/file', 'file'
-fs.writeFileSync prefixPath + '/rmdirRec/onlyfile', 'onlyfile'
+fs.mkdirSync prefixPath + '/rmRec'
+fs.mkdirSync prefixPath + '/rmRec/empty'
+fs.mkdirSync prefixPath + '/rmRec/nonempty'
+fs.mkdirSync prefixPath + '/rmRec/nonempty/dir'
+fs.writeFileSync prefixPath + '/rmRec/nonempty/file', 'file'
+fs.writeFileSync prefixPath + '/rmRec/onlyfile', 'onlyfile'
 
 fs.mkdirSync prefixPath + '/chmodRec'
 fs.mkdirSync prefixPath + '/chmodRec/empty'
@@ -44,42 +44,42 @@ suite.discuss("When trying fs2http recursive routes")
   .use("localhost", 3000)
   .setHeader("Content-Type", "application/json")
 
-  suite.del '/fs2http/rmdirRec',
-    path : prefixPath + '/rmdirRec/empty'
-  .expect('rmdirRec route', 200, (err, res, body) ->
+  suite.del '/fs2http/rmRec',
+    path : prefixPath + '/rmRec/empty'
+  .expect('rmRec route', 200, (err, res, body) ->
     assert.equal body, '{}'
-    path.exists prefixPath + '/rmdirRec/empty', (exists) ->
+    path.exists prefixPath + '/rmRec/empty', (exists) ->
       assert.isFalse exists
   )
 
   suite.discuss('with non empty directory')
-  .del '/fs2http/rmdirRec',
-    path : prefixPath + '/rmdirRec/nonempty'
-  .expect('rmdirRec route', 200, (err, res, body) ->
+  .del '/fs2http/rmRec',
+    path : prefixPath + '/rmRec/nonempty'
+  .expect('rmRec route', 200, (err, res, body) ->
     assert.equal body, '{}'
 
-    path.exists prefixPath + '/rmdirRec/nonempty', (exists) ->
+    path.exists prefixPath + '/rmRec/nonempty', (exists) ->
       assert.isFalse exists
 
-    path.exists prefixPath + '/rmdirRec', (exists) ->
+    path.exists prefixPath + '/rmRec', (exists) ->
       assert.isTrue exists
   )
   .undiscuss()
 
   suite.discuss('with non existing directory')
-  .del '/fs2http/rmdirRec',
-    path : prefixPath + '/rmdirRec/nonexisting'
-  .expect('rmdirRec route', 500, (err, res, body) ->
+  .del '/fs2http/rmRec',
+    path : prefixPath + '/rmRec/nonexisting'
+  .expect('rmRec route', 500, (err, res, body) ->
     # TODO take time to fix it
     #assert.equal JSON.parse(body)['error'].length, 1
   )
   .undiscuss()
 
   suite.discuss('with a file and not a directory')
-  .del '/fs2http/rmdirRec',
-    path : prefixPath + '/rmdirRec/onlyfile'
-  .expect('rmdirRec route', 200, (err, res, body) ->
-    path.exists prefixPath + '/rmdirRec/onlyfile', (exists) ->
+  .del '/fs2http/rmRec',
+    path : prefixPath + '/rmRec/onlyfile'
+  .expect('rmRec route', 200, (err, res, body) ->
+    path.exists prefixPath + '/rmRec/onlyfile', (exists) ->
       assert.isFalse exists
   )
   .undiscuss()

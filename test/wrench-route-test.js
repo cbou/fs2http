@@ -27,17 +27,17 @@
 
   fs.mkdirSync(prefixPath);
 
-  fs.mkdirSync(prefixPath + '/rmdirRec');
+  fs.mkdirSync(prefixPath + '/rmRec');
 
-  fs.mkdirSync(prefixPath + '/rmdirRec/empty');
+  fs.mkdirSync(prefixPath + '/rmRec/empty');
 
-  fs.mkdirSync(prefixPath + '/rmdirRec/nonempty');
+  fs.mkdirSync(prefixPath + '/rmRec/nonempty');
 
-  fs.mkdirSync(prefixPath + '/rmdirRec/nonempty/dir');
+  fs.mkdirSync(prefixPath + '/rmRec/nonempty/dir');
 
-  fs.writeFileSync(prefixPath + '/rmdirRec/nonempty/file', 'file');
+  fs.writeFileSync(prefixPath + '/rmRec/nonempty/file', 'file');
 
-  fs.writeFileSync(prefixPath + '/rmdirRec/onlyfile', 'onlyfile');
+  fs.writeFileSync(prefixPath + '/rmRec/onlyfile', 'onlyfile');
 
   fs.mkdirSync(prefixPath + '/chmodRec');
 
@@ -69,35 +69,35 @@
 
   suite.discuss("When trying fs2http recursive routes").use("localhost", 3000).setHeader("Content-Type", "application/json");
 
-  suite.del('/fs2http/rmdirRec', {
-    path: prefixPath + '/rmdirRec/empty'
-  }).expect('rmdirRec route', 200, function(err, res, body) {
+  suite.del('/fs2http/rmRec', {
+    path: prefixPath + '/rmRec/empty'
+  }).expect('rmRec route', 200, function(err, res, body) {
     assert.equal(body, '{}');
-    return path.exists(prefixPath + '/rmdirRec/empty', function(exists) {
+    return path.exists(prefixPath + '/rmRec/empty', function(exists) {
       return assert.isFalse(exists);
     });
   });
 
-  suite.discuss('with non empty directory').del('/fs2http/rmdirRec', {
-    path: prefixPath + '/rmdirRec/nonempty'
-  }).expect('rmdirRec route', 200, function(err, res, body) {
+  suite.discuss('with non empty directory').del('/fs2http/rmRec', {
+    path: prefixPath + '/rmRec/nonempty'
+  }).expect('rmRec route', 200, function(err, res, body) {
     assert.equal(body, '{}');
-    path.exists(prefixPath + '/rmdirRec/nonempty', function(exists) {
+    path.exists(prefixPath + '/rmRec/nonempty', function(exists) {
       return assert.isFalse(exists);
     });
-    return path.exists(prefixPath + '/rmdirRec', function(exists) {
+    return path.exists(prefixPath + '/rmRec', function(exists) {
       return assert.isTrue(exists);
     });
   }).undiscuss();
 
-  suite.discuss('with non existing directory').del('/fs2http/rmdirRec', {
-    path: prefixPath + '/rmdirRec/nonexisting'
-  }).expect('rmdirRec route', 500, function(err, res, body) {}).undiscuss();
+  suite.discuss('with non existing directory').del('/fs2http/rmRec', {
+    path: prefixPath + '/rmRec/nonexisting'
+  }).expect('rmRec route', 500, function(err, res, body) {}).undiscuss();
 
-  suite.discuss('with a file and not a directory').del('/fs2http/rmdirRec', {
-    path: prefixPath + '/rmdirRec/onlyfile'
-  }).expect('rmdirRec route', 200, function(err, res, body) {
-    return path.exists(prefixPath + '/rmdirRec/onlyfile', function(exists) {
+  suite.discuss('with a file and not a directory').del('/fs2http/rmRec', {
+    path: prefixPath + '/rmRec/onlyfile'
+  }).expect('rmRec route', 200, function(err, res, body) {
+    return path.exists(prefixPath + '/rmRec/onlyfile', function(exists) {
       return assert.isFalse(exists);
     });
   }).undiscuss();
