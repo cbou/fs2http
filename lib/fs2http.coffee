@@ -79,7 +79,5 @@ fs2http.use = (app) ->
 
 	# custom
 	fs2http.app.get fs2http.options.path.ls, fs2http.routes.ls
-	
-	fs2http
 
 exports = module.exports = fs2http;
