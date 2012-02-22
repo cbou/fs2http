@@ -1,4 +1,5 @@
 fs = require 'fs'
+step = require 'step'
 utils = require '../utils'
 
 module.exports = (req, res) ->
@@ -7,8 +8,21 @@ module.exports = (req, res) ->
 
   result = {}
 
-  fs.chmod path, mode, (err) ->
-    if err
-      utils.errorToResult(result, err, res)
+  writeProtection = utils.writeProtection(req, res, path)
+
+  readProtection = utils.readProtection(req, res, path)
+
+  sendResult = (err) ->
+    if (err)
+      utils.forbiddenToResult result, err, res
+
+    else
+      fs.chmod path, mode, (err) ->
+        if err
+          utils.errorToResult(result, err, res)
 
     res.send result
+
+  step writeProtection, sendResult
+
+  step readProtection, sendResult

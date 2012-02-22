@@ -13,6 +13,26 @@
 
   fs2http.use(app);
 
+  fs2http.protections.read = function(req, res, path, callback) {
+    var regex;
+    regex = /\/tmp\/fs2http\/protection\/read-protected/g;
+    if (regex.test(path)) {
+      return callback('path read protected');
+    } else {
+      return callback();
+    }
+  };
+
+  fs2http.protections.write = function(req, res, path, callback) {
+    var regex;
+    regex = /\/tmp\/fs2http\/protection\/write-protected/g;
+    if (regex.test(path)) {
+      return callback('path write protected');
+    } else {
+      return callback();
+    }
+  };
+
   module["export"] = app;
 
   app.listen(3000);

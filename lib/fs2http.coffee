@@ -1,9 +1,6 @@
-
 fs2http = {}
 
 fs2http.routes = require './routes'
-
-
 
 # set default
 fs2http.options = {
@@ -50,11 +47,21 @@ fs2http.options = {
 		'groupFile' : '/etc/group'
 }
 
+unsafeProtection = (req, res, path, callback) ->
+	callback()
+
+fs2http.protections = {}
+fs2http.protections.read = unsafeProtection;
+fs2http.protections.write = unsafeProtection;
+
 ###
  * Add the app
 ###
 fs2http.use = (app) ->
+
 	fs2http.app = app
+	app.fs2http = fs2http
+	
 	# from node
 	fs2http.app.post fs2http.options.path.rename, fs2http.routes.rename
 	fs2http.app.post fs2http.options.path.chown, fs2http.routes.chown

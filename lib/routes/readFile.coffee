@@ -1,4 +1,5 @@
 fs = require 'fs'
+step = require 'step'
 utils = require '../utils'
 
 module.exports = (req, res) ->
@@ -7,10 +8,19 @@ module.exports = (req, res) ->
 
   result = {}
 
-  fs.readFile path, encoding, (err, data) ->
-    if err
-      utils.errorToResult(result, err, res)
+  readProtection = utils.readProtection(req, res, path)
 
-    result['data'] = data;
+  sendResult = (err) ->
+    if (err)
+      utils.forbiddenToResult result, err, res
+
+    else
+      fs.readFile path, encoding, (err, data) ->
+        if err
+          utils.errorToResult(result, err, res)
+
+        result['data'] = data;
 
     res.send result
+
+  step readProtection, sendResult

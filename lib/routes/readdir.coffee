@@ -1,15 +1,26 @@
 fs = require 'fs'
+step = require 'step'
 util = require 'util'
+utils = require '../utils'
 
 module.exports = (req, res) ->
   path = req.query.path
 
   result = {}
 
-  fs.readdir path, (err, files) ->
-    if err
-      utils.errorToResult(result, err, res)
+  readProtection = utils.readProtection(req, res, path)
 
-    result['files'] = files;
+  sendResult = (err) ->
+    if (err)
+      utils.forbiddenToResult result, err, res
+
+    else
+      fs.readdir path, (err, files) ->
+        if err
+          utils.errorToResult(result, err, res)
+
+        result['files'] = files;
 
     res.send result
+
+  step readProtection, sendResult

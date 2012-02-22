@@ -1,4 +1,5 @@
 fs = require 'fs'
+step = require 'step'
 utils = require '../utils'
 
 module.exports = (req, res) ->
@@ -6,10 +7,19 @@ module.exports = (req, res) ->
 
   result = {}
 
-  fs.readlink path, (err, linkString) ->
-    if err
-      utils.errorToResult(result, err, res)
+  readProtection = utils.readProtection(req, res, path)
 
-    result['linkString'] = linkString;
+  sendResult = (err) ->
+    if (err)
+      utils.forbiddenToResult result, err, res
+
+    else
+      fs.readlink path, (err, linkString) ->
+        if err
+          utils.errorToResult(result, err, res)
+
+        result['linkString'] = linkString;
 
     res.send result
+
+  step readProtection, sendResult
