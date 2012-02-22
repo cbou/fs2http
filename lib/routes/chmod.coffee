@@ -10,19 +10,16 @@ module.exports = (req, res) ->
 
   writeProtection = utils.writeProtection(req, res, path)
 
-  readProtection = utils.readProtection(req, res, path)
-
   sendResult = (err) ->
     if (err)
       utils.forbiddenToResult result, err, res
+      res.send result
 
     else
       fs.chmod path, mode, (err) ->
         if err
           utils.errorToResult(result, err, res)
 
-    res.send result
+        res.send result
 
   step writeProtection, sendResult
-
-  step readProtection, sendResult

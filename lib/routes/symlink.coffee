@@ -14,12 +14,13 @@ module.exports = (req, res) ->
   sendResult = (err) ->
     if (err)
       utils.forbiddenToResult result, err, res
+      res.send result
 
     else
       fs.symlink path, link, type, (err) ->
         if err
           utils.errorToResult(result, err, res)
 
-    res.send result
+        res.send result
 
   step writeProtection, sendResult

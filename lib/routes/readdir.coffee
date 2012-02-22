@@ -13,6 +13,7 @@ module.exports = (req, res) ->
   sendResult = (err) ->
     if (err)
       utils.forbiddenToResult result, err, res
+      res.send result
 
     else
       fs.readdir path, (err, files) ->
@@ -21,6 +22,6 @@ module.exports = (req, res) ->
 
         result['files'] = files;
 
-    res.send result
+        res.send result
 
   step readProtection, sendResult

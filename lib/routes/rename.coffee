@@ -14,12 +14,13 @@ module.exports = (req, res) ->
   sendResult = (err) ->
     if (err)
       utils.forbiddenToResult result, err, res
+      res.send result
 
     else
       fs.rename path1, path2, (err) ->
         if err
           utils.errorToResult(result, err, res)
 
-    res.send result
+        res.send result
 
   step writeProtection1, writeProtection2, sendResult

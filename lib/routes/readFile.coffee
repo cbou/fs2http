@@ -13,6 +13,7 @@ module.exports = (req, res) ->
   sendResult = (err) ->
     if (err)
       utils.forbiddenToResult result, err, res
+      res.send result
 
     else
       fs.readFile path, encoding, (err, data) ->
@@ -20,7 +21,6 @@ module.exports = (req, res) ->
           utils.errorToResult(result, err, res)
 
         result['data'] = data;
-
-    res.send result
+        res.send result
 
   step readProtection, sendResult

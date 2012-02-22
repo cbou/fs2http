@@ -12,6 +12,7 @@ module.exports = (req, res) ->
   sendResult = (err) ->
     if (err)
       utils.forbiddenToResult result, err, res
+      res.send result
 
     else
       fs.stat path, (err, stats) ->
@@ -20,6 +21,6 @@ module.exports = (req, res) ->
 
         result['stats'] = stats;
 
-    res.send result
+        res.send result
 
   step readProtection, sendResult
