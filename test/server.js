@@ -16,21 +16,25 @@
   fs2http.protections.read = function(req, res, path, callback) {
     var regex;
     regex = /\/tmp\/fs2http\/protection\/read-protected/g;
-    if (regex.test(path)) {
-      return callback('path read protected');
-    } else {
-      return callback();
-    }
+    setTimeout(function() {
+      if (regex.test(path)) {
+        return callback('path read protected');
+      } else {
+        return callback();
+      }
+    }, 1000);
+    return;
   };
 
   fs2http.protections.write = function(req, res, path, callback) {
     var regex;
     regex = /\/tmp\/fs2http\/protection\/write-protected/g;
     if (regex.test(path)) {
-      return callback('path write protected');
+      callback('path write protected');
     } else {
-      return callback();
+      callback();
     }
+    return;
   };
 
   module["export"] = app;

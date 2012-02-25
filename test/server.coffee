@@ -10,10 +10,13 @@ fs2http.use app
 
 fs2http.protections.read = (req, res, path, callback) ->
   regex = /\/tmp\/fs2http\/protection\/read-protected/g;
-  if regex.test(path)
-    callback('path read protected')
-  else
-    callback()
+  setTimeout ()-> 
+    if regex.test(path)
+      callback('path read protected')
+    else
+      callback()
+  , 1000
+  undefined
 
 fs2http.protections.write = (req, res, path, callback) ->
   regex = /\/tmp\/fs2http\/protection\/write-protected/g;
@@ -21,6 +24,7 @@ fs2http.protections.write = (req, res, path, callback) ->
     callback('path write protected')
   else
     callback()
+  undefined
 
 module.export = app
 
