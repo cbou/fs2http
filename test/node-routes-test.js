@@ -1,5 +1,5 @@
 (function() {
-  var APIeasy, app, assert, fs, newGid, path, prefixPath, suite, utils, wrench;
+  var APIeasy, app, assert, fs, newGid, path, prefixPath, suite, u, utils, wrench;
 
   APIeasy = require("api-easy");
 
@@ -16,6 +16,8 @@
   utils = require('../lib/utils');
 
   app = require('./server');
+
+  u = require('underscore');
 
   newGid = utils.findValidGid();
 
@@ -107,7 +109,7 @@
     path: prefixPath + '/chmod',
     mode: '0777'
   }).expect('chmod route', 200, function(err, res, body) {
-    assert.equal(body, '{}');
+    assert.equal(u.size(body), 0);
     return fs.stat(prefixPath + '/chmod', function(err, stats) {
       return assert.equal(stats['mode'], 16895);
     });
@@ -118,7 +120,7 @@
     uid: fs.statSync(prefixPath + '/chown')['uid'],
     gid: newGid
   }).expect('chown route', 200, function(err, res, body) {
-    assert.equal(body, '{}');
+    assert.equal(u.size(body), 0);
     return fs.stat(prefixPath + '/chown', function(err, stats) {
       return assert.equal(stats['gid'], newGid);
     });
@@ -127,7 +129,7 @@
   suite.post('/fs2http/mkdir', {
     path: prefixPath + '/mkdir'
   }).expect('mkdir route', 200, function(err, res, body) {
-    assert.equal(body, '{}');
+    assert.equal(u.size(body), 0);
     return path.exists(prefixPath + '/mkdir', function(exists) {
       return assert.ok(exists);
     });
@@ -137,29 +139,29 @@
     path: prefixPath + '/readFile/empty',
     encoding: 'utf-8'
   }).expect('readFile route, with empty file', 200, function(err, res, body) {
-    return assert.isEmpty(JSON.parse(body)['data']);
+    return assert.isEmpty(body['data']);
   }).undiscuss();
 
   suite.get('/fs2http/readFile', {
     path: prefixPath + '/readFile/file',
     encoding: 'utf-8'
   }).expect('readFile route, with non-empty file', 200, function(err, res, body) {
-    return assert.equal(JSON.parse(body)['data'], 'file');
+    return assert.equal(body['data'], 'file');
   });
 
   suite.get('/fs2http/readdir', {
     path: prefixPath + '/readdir'
   }).expect('readdir route, with non-empty file', 200, function(err, res, body) {
-    assert.equal(JSON.parse(body)['files'].length, 2);
-    assert.include(JSON.parse(body)['files'], 'empty');
-    return assert.include(JSON.parse(body)['files'], 'file');
+    assert.equal(body['files'].length, 2);
+    assert.include(body['files'], 'empty');
+    return assert.include(body['files'], 'file');
   });
 
   suite.discuss('with non empty directory').post('/fs2http/rename', {
     path1: prefixPath + '/rename/file',
     path2: prefixPath + '/rename/file2'
   }).expect('rename route', 200, function(err, res, body) {
-    assert.equal(body, '{}');
+    assert.equal(u.size(body), 0);
     path.exists(prefixPath + '/rename/file', function(exists) {
       return assert.isFalse(exists);
     });
@@ -172,13 +174,13 @@
     path1: prefixPath + '/rename/file',
     path2: '/dev/null'
   }).expect('rename route, with non existing file', 500, function(err, res, body) {
-    return assert.equal(JSON.parse(body)['error'].length, 1);
+    return assert.equal(body['error'].length, 1);
   });
 
   suite.del('/fs2http/rmdir', {
     path: prefixPath + '/rmdir/empty'
   }).expect('rmdir route', 200, function(err, res, body) {
-    assert.equal(body, '{}');
+    assert.equal(u.size(body), 0);
     return path.exists(prefixPath + '/rmdir/empty', function(exists) {
       return assert.isFalse(exists);
     });
@@ -187,7 +189,7 @@
   suite.discuss('with non empty directory').del('/fs2http/rmdir', {
     path: prefixPath + '/rmdir/nonempty'
   }).expect('rmdir route', 500, function(err, res, body) {
-    assert.equal(JSON.parse(body)['error'].length, 1);
+    assert.equal(body['error'].length, 1);
     return path.exists(prefixPath + '/rmdir/nonempty', function(exists) {
       return assert.isTrue(exists);
     });
@@ -196,13 +198,13 @@
   suite.discuss('with non existing directory').del('/fs2http/rmdir', {
     path: prefixPath + '/rmdir/nonexisting'
   }).expect('rmdir route', 500, function(err, res, body) {
-    return assert.equal(JSON.parse(body)['error'].length, 1);
+    return assert.equal(body['error'].length, 1);
   }).undiscuss();
 
   suite.get('/fs2http/stat', {
     path: prefixPath + '/stat'
   }).expect('stat route', 200, function(err, res, body) {
-    return assert.ok(JSON.parse(body)['stats']);
+    return assert.ok(body['stats']);
   });
 
   suite.post('/fs2http/utimes', {
@@ -210,7 +212,7 @@
     atime: 104321,
     mtime: 654231
   }).expect('utimes route', 200, function(err, res, body) {
-    assert.equal(body, '{}');
+    assert.equal(u.size(body), 0);
     return fs.stat(prefixPath + '/utimes', function(err, stats) {
       assert.equal(stats['atime'].getTime() / 1000, 104321);
       return assert.equal(stats['mtime'].getTime() / 1000, 654231);
@@ -221,7 +223,7 @@
     path: prefixPath + '/writeFile/file',
     data: 'file'
   }).expect('writeFile route, with data', 200, function(err, res, body) {
-    assert.equal(body, '{}');
+    assert.equal(u.size(body), 0);
     return fs.readFile(prefixPath + '/writeFile/file', 'utf-8', function(err, data) {
       return assert.equal(data, 'file');
     });
@@ -240,7 +242,7 @@
     path: prefixPath + '/symlink/dir',
     link: prefixPath + '/symlink/linkdir'
   }).expect('link route', 200, function(err, res, body) {
-    assert.equal(body, '{}');
+    assert.equal(u.size(body), 0);
     return fs.lstat(prefixPath + '/symlink/linkdir', function(err, stats) {
       return assert.isTrue(stats.isSymbolicLink());
     });
@@ -250,7 +252,7 @@
     path: prefixPath + '/symlink/file',
     link: prefixPath + '/symlink/linkfile'
   }).expect('link route', 200, function(err, res, body) {
-    assert.equal(body, '{}');
+    assert.equal(u.size(body), 0);
     return fs.lstat(prefixPath + '/symlink/linkfile', function(err, stats) {
       return assert.isTrue(stats.isSymbolicLink());
     });
@@ -260,7 +262,7 @@
     path: prefixPath + '/symlink/linklink',
     link: prefixPath + '/symlink/linklinklink'
   }).expect('link route', 200, function(err, res, body) {
-    assert.equal(body, '{}');
+    assert.equal(u.size(body), 0);
     return fs.lstat(prefixPath + '/symlink/linklinklink', function(err, stats) {
       return assert.isTrue(stats.isSymbolicLink());
     });
@@ -269,7 +271,7 @@
   suite.discuss('unlink a dir').del('/fs2http/unlink', {
     path: prefixPath + '/unlink/dir1'
   }).expect('unlink route', 500, function(err, res, body) {
-    assert.equal(JSON.parse(body)['error'].length, 1);
+    assert.equal(body['error'].length, 1);
     return path.exists(prefixPath + '/unlink/dir1', function(exists) {
       return assert.isTrue(exists);
     });
@@ -278,7 +280,7 @@
   suite.discuss('unlink a file').del('/fs2http/unlink', {
     path: prefixPath + '/unlink/file'
   }).expect('unlink route', 200, function(err, res, body) {
-    assert.equal(body, '{}');
+    assert.equal(u.size(body), 0);
     return path.exists(prefixPath + '/unlink/file', function(exists) {
       return assert.isFalse(exists);
     });
@@ -287,7 +289,7 @@
   suite.discuss('unlink a link').del('/fs2http/unlink', {
     path: prefixPath + '/unlink/linkdir'
   }).expect('unlink route', 200, function(err, res, body) {
-    assert.equal(body, '{}');
+    assert.equal(u.size(body), 0);
     return path.exists(prefixPath + '/unlink/linkdir', function(exists) {
       return assert.isFalse(exists);
     });
@@ -296,43 +298,43 @@
   suite.discuss('readlink a dir link').get('/fs2http/readlink', {
     path: prefixPath + '/readlink/linkdir'
   }).expect('readlink route', 200, function(err, res, body) {
-    return assert.equal(JSON.parse(body)['linkString'], prefixPath + '/readlink/dir');
+    return assert.equal(body['linkString'], prefixPath + '/readlink/dir');
   }).undiscuss();
 
   suite.discuss('readlink a file link').get('/fs2http/readlink', {
     path: prefixPath + '/readlink/linkfile'
   }).expect('readlink route', 200, function(err, res, body) {
-    return assert.equal(JSON.parse(body)['linkString'], prefixPath + '/readlink/file');
+    return assert.equal(body['linkString'], prefixPath + '/readlink/file');
   }).undiscuss();
 
   suite.discuss('readlink a file').get('/fs2http/readlink', {
     path: prefixPath + '/readlink/dir'
   }).expect('readlink route', 500, function(err, res, body) {
-    return assert.equal(JSON.parse(body)['error'].length, 1);
+    return assert.equal(body['error'].length, 1);
   }).undiscuss();
 
   suite.discuss('readlink a file').get('/fs2http/readlink', {
     path: prefixPath + '/readlink/file'
   }).expect('readlink route', 500, function(err, res, body) {
-    return assert.equal(JSON.parse(body)['error'].length, 1);
+    return assert.equal(body['error'].length, 1);
   }).undiscuss();
 
   suite.discuss('exists a file').get('/fs2http/exists', {
     path: prefixPath + '/exists/file'
   }).expect('exists route', 200, function(err, res, body) {
-    return assert.isTrue(JSON.parse(body)['exists']);
+    return assert.isTrue(body['exists']);
   }).undiscuss();
 
   suite.discuss('exists a dir').get('/fs2http/exists', {
     path: prefixPath + '/exists/dir'
   }).expect('exists route', 200, function(err, res, body) {
-    return assert.isTrue(JSON.parse(body)['exists']);
+    return assert.isTrue(body['exists']);
   }).undiscuss();
 
   suite.discuss('exists a linkdir').get('/fs2http/exists', {
     path: prefixPath + '/exists/linkdir'
   }).expect('exists route', 200, function(err, res, body) {
-    return assert.isTrue(JSON.parse(body)['exists']);
+    return assert.isTrue(body['exists']);
   }).undiscuss();
 
   suite["export"](module);

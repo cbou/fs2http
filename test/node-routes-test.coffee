@@ -6,6 +6,7 @@ wrench = require('wrench')
 path = require 'path'
 utils = require '../lib/utils'
 app = require './server'
+u = require 'underscore'
 
 newGid = utils.findValidGid()
 prefixPath = '/tmp/fs2http/node';
@@ -67,12 +68,12 @@ fs.symlinkSync prefixPath + '/exists/dir', prefixPath + '/exists/linkdir'
 suite.discuss("When trying fs2http node routes")
   .use("localhost", 3000)
   .setHeader("Content-Type", "application/json")
-
+  
   suite.post '/fs2http/chmod',
     path : prefixPath + '/chmod'
     mode : '0777'
   .expect('chmod route', 200, (err, res, body) ->
-    assert.equal body, '{}'
+    assert.equal u.size(body), 0
     fs.stat prefixPath + '/chmod', (err, stats) ->
       assert.equal stats['mode'], 16895
   )
@@ -82,7 +83,7 @@ suite.discuss("When trying fs2http node routes")
     uid : fs.statSync(prefixPath + '/chown')['uid']
     gid : newGid
   .expect('chown route', 200, (err, res, body) ->
-    assert.equal body, '{}'
+    assert.equal u.size(body), 0
     fs.stat prefixPath + '/chown', (err, stats) ->
       assert.equal stats['gid'], newGid
   )
@@ -90,7 +91,7 @@ suite.discuss("When trying fs2http node routes")
   suite.post '/fs2http/mkdir',
     path : prefixPath + '/mkdir'
   .expect('mkdir route', 200, (err, res, body) ->
-    assert.equal body, '{}'
+    assert.equal u.size(body), 0
     path.exists prefixPath + '/mkdir', (exists) ->
       assert.ok exists
   )
@@ -100,7 +101,7 @@ suite.discuss("When trying fs2http node routes")
     path : prefixPath + '/readFile/empty'
     encoding : 'utf-8'
   .expect('readFile route, with empty file', 200, (err, res, body) ->
-    assert.isEmpty JSON.parse(body)['data']
+    assert.isEmpty body['data']
   )
   .undiscuss()
 
@@ -108,15 +109,15 @@ suite.discuss("When trying fs2http node routes")
     path : prefixPath + '/readFile/file'
     encoding : 'utf-8'
   .expect('readFile route, with non-empty file', 200, (err, res, body) ->
-    assert.equal JSON.parse(body)['data'], 'file'
+    assert.equal body['data'], 'file'
   )
 
   suite.get '/fs2http/readdir',
     path : prefixPath + '/readdir'
   .expect('readdir route, with non-empty file', 200, (err, res, body) ->
-    assert.equal JSON.parse(body)['files'].length, 2
-    assert.include JSON.parse(body)['files'], 'empty'
-    assert.include JSON.parse(body)['files'], 'file'
+    assert.equal body['files'].length, 2
+    assert.include body['files'], 'empty'
+    assert.include body['files'], 'file'
   )
 
   suite.discuss('with non empty directory')
@@ -124,7 +125,7 @@ suite.discuss("When trying fs2http node routes")
     path1 : prefixPath + '/rename/file'
     path2 : prefixPath + '/rename/file2'
   .expect('rename route', 200, (err, res, body) ->
-    assert.equal body, '{}'
+    assert.equal u.size(body), 0
     path.exists prefixPath + '/rename/file', (exists) ->
       assert.isFalse exists
 
@@ -137,13 +138,13 @@ suite.discuss("When trying fs2http node routes")
     path1 : prefixPath + '/rename/file'
     path2 : '/dev/null'
   .expect('rename route, with non existing file', 500, (err, res, body) ->
-    assert.equal JSON.parse(body)['error'].length, 1
+    assert.equal body['error'].length, 1
   )
 
   suite.del '/fs2http/rmdir',
     path : prefixPath + '/rmdir/empty'
   .expect('rmdir route', 200, (err, res, body) ->
-    assert.equal body, '{}'
+    assert.equal u.size(body), 0
     path.exists prefixPath + '/rmdir/empty', (exists) ->
       assert.isFalse exists
   )
@@ -152,7 +153,7 @@ suite.discuss("When trying fs2http node routes")
   .del '/fs2http/rmdir',
     path : prefixPath + '/rmdir/nonempty'
   .expect('rmdir route', 500, (err, res, body) ->
-    assert.equal JSON.parse(body)['error'].length, 1
+    assert.equal body['error'].length, 1
 
     path.exists prefixPath + '/rmdir/nonempty', (exists) ->
       assert.isTrue exists
@@ -163,14 +164,14 @@ suite.discuss("When trying fs2http node routes")
   .del '/fs2http/rmdir',
     path : prefixPath + '/rmdir/nonexisting'
   .expect('rmdir route', 500, (err, res, body) ->
-    assert.equal JSON.parse(body)['error'].length, 1
+    assert.equal body['error'].length, 1
   )
   .undiscuss()
 
   suite.get '/fs2http/stat',
     path : prefixPath + '/stat'
   .expect('stat route', 200, (err, res, body) ->
-    assert.ok JSON.parse(body)['stats']
+    assert.ok body['stats']
   )
 
   suite.post '/fs2http/utimes',
@@ -178,7 +179,7 @@ suite.discuss("When trying fs2http node routes")
     atime : 104321
     mtime : 654231
   .expect('utimes route', 200, (err, res, body) ->
-    assert.equal body, '{}'
+    assert.equal u.size(body), 0
     fs.stat prefixPath + '/utimes', (err, stats) ->
       assert.equal stats['atime'].getTime() / 1000, 104321
       assert.equal stats['mtime'].getTime() / 1000, 654231
@@ -189,7 +190,7 @@ suite.discuss("When trying fs2http node routes")
     path : prefixPath + '/writeFile/file'
     data : 'file'
   .expect('writeFile route, with data', 200, (err, res, body) ->
-    assert.equal body, '{}'
+    assert.equal u.size(body), 0
     fs.readFile prefixPath + '/writeFile/file', 'utf-8', (err, data) ->
       assert.equal data, 'file'
   )
@@ -209,7 +210,7 @@ suite.discuss("When trying fs2http node routes")
     path : prefixPath + '/symlink/dir'
     link : prefixPath + '/symlink/linkdir'
   .expect('link route', 200, (err, res, body) ->
-    assert.equal body, '{}'
+    assert.equal u.size(body), 0
 
     fs.lstat prefixPath + '/symlink/linkdir', (err, stats) ->
       assert.isTrue stats.isSymbolicLink()
@@ -221,7 +222,7 @@ suite.discuss("When trying fs2http node routes")
     path : prefixPath + '/symlink/file'
     link : prefixPath + '/symlink/linkfile'
   .expect('link route', 200, (err, res, body) ->
-    assert.equal body, '{}'
+    assert.equal u.size(body), 0
 
     fs.lstat prefixPath + '/symlink/linkfile', (err, stats) ->
       assert.isTrue stats.isSymbolicLink()
@@ -233,7 +234,7 @@ suite.discuss("When trying fs2http node routes")
     path : prefixPath + '/symlink/linklink'
     link : prefixPath + '/symlink/linklinklink'
   .expect('link route', 200, (err, res, body) ->
-    assert.equal body, '{}'
+    assert.equal u.size(body), 0
 
     fs.lstat prefixPath + '/symlink/linklinklink', (err, stats) ->
       assert.isTrue stats.isSymbolicLink()
@@ -244,7 +245,7 @@ suite.discuss("When trying fs2http node routes")
   .del '/fs2http/unlink',
     path : prefixPath + '/unlink/dir1'
   .expect('unlink route', 500, (err, res, body) ->
-    assert.equal JSON.parse(body)['error'].length, 1
+    assert.equal body['error'].length, 1
 
     path.exists prefixPath + '/unlink/dir1', (exists) ->
       assert.isTrue exists
@@ -255,7 +256,7 @@ suite.discuss("When trying fs2http node routes")
   .del '/fs2http/unlink',
     path : prefixPath + '/unlink/file'
   .expect('unlink route', 200, (err, res, body) ->
-    assert.equal body, '{}'
+    assert.equal u.size(body), 0
 
     path.exists prefixPath + '/unlink/file', (exists) ->
       assert.isFalse exists
@@ -266,7 +267,7 @@ suite.discuss("When trying fs2http node routes")
   .del '/fs2http/unlink',
     path : prefixPath + '/unlink/linkdir'
   .expect('unlink route', 200, (err, res, body) ->
-    assert.equal body, '{}'
+    assert.equal u.size(body), 0
 
     path.exists prefixPath + '/unlink/linkdir', (exists) ->
       assert.isFalse exists
@@ -277,7 +278,7 @@ suite.discuss("When trying fs2http node routes")
   .get '/fs2http/readlink',
     path : prefixPath + '/readlink/linkdir'
   .expect('readlink route', 200, (err, res, body) ->
-    assert.equal JSON.parse(body)['linkString'], prefixPath + '/readlink/dir'
+    assert.equal body['linkString'], prefixPath + '/readlink/dir'
   )
   .undiscuss()
 
@@ -285,7 +286,7 @@ suite.discuss("When trying fs2http node routes")
   .get '/fs2http/readlink',
     path : prefixPath + '/readlink/linkfile'
   .expect('readlink route', 200, (err, res, body) ->
-    assert.equal JSON.parse(body)['linkString'], prefixPath + '/readlink/file'
+    assert.equal body['linkString'], prefixPath + '/readlink/file'
   )
   .undiscuss()
 
@@ -293,7 +294,7 @@ suite.discuss("When trying fs2http node routes")
   .get '/fs2http/readlink',
     path : prefixPath + '/readlink/dir'
   .expect('readlink route', 500, (err, res, body) ->
-    assert.equal JSON.parse(body)['error'].length, 1
+    assert.equal body['error'].length, 1
   )
   .undiscuss()
 
@@ -301,7 +302,7 @@ suite.discuss("When trying fs2http node routes")
   .get '/fs2http/readlink',
     path : prefixPath + '/readlink/file'
   .expect('readlink route', 500, (err, res, body) ->
-    assert.equal JSON.parse(body)['error'].length, 1
+    assert.equal body['error'].length, 1
   )
   .undiscuss()
 
@@ -309,7 +310,7 @@ suite.discuss("When trying fs2http node routes")
   .get '/fs2http/exists',
     path : prefixPath + '/exists/file'
   .expect('exists route', 200, (err, res, body) ->
-    assert.isTrue JSON.parse(body)['exists']
+    assert.isTrue body['exists']
   )
   .undiscuss()
 
@@ -317,7 +318,7 @@ suite.discuss("When trying fs2http node routes")
   .get '/fs2http/exists',
     path : prefixPath + '/exists/dir'
   .expect('exists route', 200, (err, res, body) ->
-    assert.isTrue JSON.parse(body)['exists']
+    assert.isTrue body['exists']
   )
   .undiscuss()
 
@@ -325,7 +326,7 @@ suite.discuss("When trying fs2http node routes")
   .get '/fs2http/exists',
     path : prefixPath + '/exists/linkdir'
   .expect('exists route', 200, (err, res, body) ->
-    assert.isTrue JSON.parse(body)['exists']
+    assert.isTrue body['exists']
   )
   .undiscuss()
 

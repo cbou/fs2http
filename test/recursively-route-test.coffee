@@ -6,6 +6,7 @@ wrench = require('wrench')
 path = require 'path'
 utils = require '../lib/utils'
 app = require './server'
+u = require 'underscore'
 
 newGid = utils.findValidGid()
 prefixPath = '/tmp/fs2http/recursive'
@@ -56,7 +57,7 @@ suite.discuss("When trying fs2http recursive routes")
   .del '/fs2http/rmRec',
     path : prefixPath + '/rmRec/empty'
   .expect('rmRec route', 200, (err, res, body) ->
-    assert.equal body, '{}'
+    assert.equal u.size(body), 0
     path.exists prefixPath + '/rmRec/empty', (exists) ->
       assert.isFalse exists
   )
@@ -65,7 +66,7 @@ suite.discuss("When trying fs2http recursive routes")
   .del '/fs2http/rmRec',
     path : prefixPath + '/rmRec/nonempty'
   .expect('rmRec route', 200, (err, res, body) ->
-    assert.equal body, '{}'
+    assert.equal u.size(body), 0
 
     path.exists prefixPath + '/rmRec/nonempty', (exists) ->
       assert.isFalse exists
@@ -79,7 +80,7 @@ suite.discuss("When trying fs2http recursive routes")
   .del '/fs2http/rmRec',
     path : prefixPath + '/rmRec/linkdir'
   .expect('rmRec route', 200, (err, res, body) ->
-    assert.equal body, '{}'
+    assert.equal u.size(body), 0
     path.exists prefixPath + '/rmRec/linkdir', (exists) ->
       assert.isFalse exists
   )
@@ -89,7 +90,7 @@ suite.discuss("When trying fs2http recursive routes")
   .del '/fs2http/rmRec',
     path : prefixPath + '/rmRec/nonexisting'
   .expect('rmRec route', 500, (err, res, body) ->
-    assert.equal JSON.parse(body)['error'].length, 1
+    assert.equal body['error'].length, 1
   )
   .undiscuss()
 
@@ -108,7 +109,7 @@ suite.discuss("When trying fs2http recursive routes")
     uid : fs.statSync(prefixPath + '/chownRec')['uid']
     gid : newGid
   .expect('chownRec route', 200, (err, res, body) ->
-    assert.equal body, '{}'
+    assert.equal u.size(body), 0
     fs.stat prefixPath + '/chownRec/empty', (err, stats) ->
       assert.equal stats['gid'], newGid
   )
@@ -120,7 +121,7 @@ suite.discuss("When trying fs2http recursive routes")
     uid : fs.statSync(prefixPath + '/chownRec/nonempty')['uid']
     gid : newGid
   .expect('chownRec route', 200, (err, res, body) ->
-    assert.equal body, '{}'
+    assert.equal u.size(body), 0
     fs.stat prefixPath + '/chownRec/nonempty/', (err, stats) ->
       assert.equal stats['gid'], newGid
     fs.stat prefixPath + '/chownRec/nonempty/dir', (err, stats) ->
@@ -141,7 +142,7 @@ suite.discuss("When trying fs2http recursive routes")
     uid : 1000
     gid : 1000
   .expect('chownRec route', 500, (err, res, body) ->
-    assert.equal JSON.parse(body)['error'].length, 1
+    assert.equal body['error'].length, 1
   )
   .undiscuss()
 
@@ -152,7 +153,7 @@ suite.discuss("When trying fs2http recursive routes")
     uid : fs.statSync(prefixPath + '/chownRec/onlyfile')['uid']
     gid : newGid
   .expect('chownRec route', 200, (err, res, body) ->
-    assert.equal body, '{}'
+    assert.equal u.size(body), 0
     fs.stat prefixPath + '/chownRec/onlyfile', (err, stats) ->
       assert.equal stats['gid'], newGid
   )
@@ -162,7 +163,7 @@ suite.discuss("When trying fs2http recursive routes")
     path : prefixPath + '/chmodRec/empty'
     mode : '0777'
   .expect('chmodRec route', 200, (err, res, body) ->
-    assert.equal body, '{}'
+    assert.equal u.size(body), 0
     fs.stat prefixPath + '/chmodRec/empty', (err, stats) ->
       assert.equal stats['mode'], 16895
   )
@@ -172,7 +173,7 @@ suite.discuss("When trying fs2http recursive routes")
     path : prefixPath + '/chmodRec/nonempty'
     mode : '0777'
   .expect('chmodRec route', 200, (err, res, body) ->
-    assert.equal body, '{}'
+    assert.equal u.size(body), 0
     fs.stat prefixPath + '/chmodRec/nonempty', (err, stats) ->
       assert.equal stats['mode'], 16895
     fs.stat prefixPath + '/chmodRec/nonempty/dir', (err, stats) ->
@@ -199,7 +200,7 @@ suite.discuss("When trying fs2http recursive routes")
     path : prefixPath + '/chmodRec/onlyfile'
     mode : '0777'
   .expect('chmodRec route', 200, (err, res, body) ->
-    assert.equal body, '{}'
+    assert.equal u.size(body), 0
 
     assert.equal fs.statSync(prefixPath + '/chmodRec/onlyfile')['mode'], 33279
   )

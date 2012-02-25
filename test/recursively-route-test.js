@@ -1,5 +1,5 @@
 (function() {
-  var APIeasy, app, assert, fs, newGid, path, prefixPath, suite, utils, wrench;
+  var APIeasy, app, assert, fs, newGid, path, prefixPath, suite, u, utils, wrench;
 
   APIeasy = require("api-easy");
 
@@ -16,6 +16,8 @@
   utils = require('../lib/utils');
 
   app = require('./server');
+
+  u = require('underscore');
 
   newGid = utils.findValidGid();
 
@@ -86,14 +88,14 @@
   suite.discuss("When trying fs2http recursive routes").use("localhost", 3000).setHeader("Content-Type", "application/json").del('/fs2http/rmRec', {
     path: prefixPath + '/rmRec/empty'
   }).expect('rmRec route', 200, function(err, res, body) {
-    assert.equal(body, '{}');
+    assert.equal(u.size(body), 0);
     return path.exists(prefixPath + '/rmRec/empty', function(exists) {
       return assert.isFalse(exists);
     });
   }).discuss('with non empty directory').del('/fs2http/rmRec', {
     path: prefixPath + '/rmRec/nonempty'
   }).expect('rmRec route', 200, function(err, res, body) {
-    assert.equal(body, '{}');
+    assert.equal(u.size(body), 0);
     path.exists(prefixPath + '/rmRec/nonempty', function(exists) {
       return assert.isFalse(exists);
     });
@@ -103,14 +105,14 @@
   }).undiscuss().discuss('with link').del('/fs2http/rmRec', {
     path: prefixPath + '/rmRec/linkdir'
   }).expect('rmRec route', 200, function(err, res, body) {
-    assert.equal(body, '{}');
+    assert.equal(u.size(body), 0);
     return path.exists(prefixPath + '/rmRec/linkdir', function(exists) {
       return assert.isFalse(exists);
     });
   }).undiscuss().discuss('with non existing directory').del('/fs2http/rmRec', {
     path: prefixPath + '/rmRec/nonexisting'
   }).expect('rmRec route', 500, function(err, res, body) {
-    return assert.equal(JSON.parse(body)['error'].length, 1);
+    return assert.equal(body['error'].length, 1);
   }).undiscuss().discuss('with a file and not a directory').del('/fs2http/rmRec', {
     path: prefixPath + '/rmRec/onlyfile'
   }).expect('rmRec route', 200, function(err, res, body) {
@@ -122,7 +124,7 @@
     uid: fs.statSync(prefixPath + '/chownRec')['uid'],
     gid: newGid
   }).expect('chownRec route', 200, function(err, res, body) {
-    assert.equal(body, '{}');
+    assert.equal(u.size(body), 0);
     return fs.stat(prefixPath + '/chownRec/empty', function(err, stats) {
       return assert.equal(stats['gid'], newGid);
     });
@@ -131,7 +133,7 @@
     uid: fs.statSync(prefixPath + '/chownRec/nonempty')['uid'],
     gid: newGid
   }).expect('chownRec route', 200, function(err, res, body) {
-    assert.equal(body, '{}');
+    assert.equal(u.size(body), 0);
     fs.stat(prefixPath + '/chownRec/nonempty/', function(err, stats) {
       return assert.equal(stats['gid'], newGid);
     });
@@ -152,13 +154,13 @@
     uid: 1000,
     gid: 1000
   }).expect('chownRec route', 500, function(err, res, body) {
-    return assert.equal(JSON.parse(body)['error'].length, 1);
+    return assert.equal(body['error'].length, 1);
   }).undiscuss().discuss('with a file and not a directory').post('/fs2http/chownRec', {
     path: prefixPath + '/chownRec/onlyfile',
     uid: fs.statSync(prefixPath + '/chownRec/onlyfile')['uid'],
     gid: newGid
   }).expect('chownRec route', 200, function(err, res, body) {
-    assert.equal(body, '{}');
+    assert.equal(u.size(body), 0);
     return fs.stat(prefixPath + '/chownRec/onlyfile', function(err, stats) {
       return assert.equal(stats['gid'], newGid);
     });
@@ -166,7 +168,7 @@
     path: prefixPath + '/chmodRec/empty',
     mode: '0777'
   }).expect('chmodRec route', 200, function(err, res, body) {
-    assert.equal(body, '{}');
+    assert.equal(u.size(body), 0);
     return fs.stat(prefixPath + '/chmodRec/empty', function(err, stats) {
       return assert.equal(stats['mode'], 16895);
     });
@@ -174,7 +176,7 @@
     path: prefixPath + '/chmodRec/nonempty',
     mode: '0777'
   }).expect('chmodRec route', 200, function(err, res, body) {
-    assert.equal(body, '{}');
+    assert.equal(u.size(body), 0);
     fs.stat(prefixPath + '/chmodRec/nonempty', function(err, stats) {
       return assert.equal(stats['mode'], 16895);
     });
@@ -197,7 +199,7 @@
     path: prefixPath + '/chmodRec/onlyfile',
     mode: '0777'
   }).expect('chmodRec route', 200, function(err, res, body) {
-    assert.equal(body, '{}');
+    assert.equal(u.size(body), 0);
     return assert.equal(fs.statSync(prefixPath + '/chmodRec/onlyfile')['mode'], 33279);
   }).undiscuss().discuss('with empty directory').post('/fs2http/copyRec', {
     path: prefixPath + '/copyRec/empty',
