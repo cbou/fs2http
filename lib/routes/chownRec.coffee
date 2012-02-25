@@ -1,4 +1,5 @@
 fs = require 'fs'
+step = require 'step'
 utils = require '../utils'
 wrench = require 'wrench'
 
@@ -9,30 +10,39 @@ module.exports = (req, res) ->
   
   result = {}
 
-  fs.stat path, (err,stats) ->
+  writeProtection = utils.writeProtection(req, res, path)
 
-    if err 
-      utils.errorToResult(result, err, res)
+  sendResult = (err) ->
+    if (err)
+      utils.forbiddenToResult result, err, res
       res.send result
-      return;
+    else
+      fs.stat path, (err,stats) ->
 
-    if stats && stats.isDirectory()
-      try 
-        wrench.chownSyncRecursive path, uid, gid
-      catch err
-        utils.errorToResult(result, err, res)
-      res.send result
-
-    else if stats && stats.isFile()
-      fs.chown path, uid, gid, (err) ->
-        if err
+        if err 
           utils.errorToResult(result, err, res)
-        res.send result
-        
-    else 
-      err = 
-        code : 'NOTIMPL'
-        message: 'function not implemented yet'
+          res.send result
+          return;
 
-      utils.errorToResult(result, err, res)
-      res.send result
+        if stats && stats.isDirectory()
+          try 
+            wrench.chownSyncRecursive path, uid, gid
+          catch err
+            utils.errorToResult(result, err, res)
+          res.send result
+
+        else if stats && stats.isFile()
+          fs.chown path, uid, gid, (err) ->
+            if err
+              utils.errorToResult(result, err, res)
+            res.send result
+            
+        else 
+          err = 
+            code : 'NOTIMPL'
+            message: 'function not implemented yet'
+
+          utils.errorToResult(result, err, res)
+          res.send result
+
+  step writeProtection, sendResult

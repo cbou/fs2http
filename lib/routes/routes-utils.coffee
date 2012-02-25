@@ -14,7 +14,6 @@ maybe like that:
     , () ->
       fs.chmod path, mode, (err) ->
         
-        console.log arguments
         if err
           utils.errorToResult(result, err, res)
 

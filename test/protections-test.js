@@ -31,6 +31,10 @@
 
   fs.mkdirSync(prefixPath + '/read-protected');
 
+  fs.mkdirSync(prefixPath + '/write-allowed');
+
+  fs.mkdirSync(prefixPath + '/read-allowed');
+
   fs.writeFileSync(prefixPath + '/write-protected/file', 'file');
 
   fs.mkdirSync(prefixPath + '/write-protected/rename');
@@ -164,6 +168,60 @@
   suite.discuss('exists a file').get('/fs2http/exists', {
     path: prefixPath + '/read-protected/exists/file'
   }).expect('exists route', 403, function(err, res, body) {
+    assert.equal(JSON.parse(body)['error'].length, 1);
+    return assert.equal(JSON.parse(body)['error'][0], 'path read protected');
+  }).undiscuss();
+
+  suite.post('/fs2http/chmodRec', {
+    path: prefixPath + '/write-protected',
+    mode: '0777'
+  }).expect('chmod route', 403, function(err, res, body) {
+    assert.equal(JSON.parse(body)['error'].length, 1);
+    return assert.equal(JSON.parse(body)['error'][0], 'path write protected');
+  });
+
+  suite.post('/fs2http/chownRec', {
+    path: prefixPath + '/write-protected',
+    uid: fs.statSync(prefixPath)['uid'],
+    gid: newGid
+  }).expect('chown route', 403, function(err, res, body) {
+    assert.equal(JSON.parse(body)['error'].length, 1);
+    return assert.equal(JSON.parse(body)['error'][0], 'path write protected');
+  });
+
+  suite.del('/fs2http/rmRec', {
+    path: prefixPath + '/write-protected'
+  }).expect('chmod route', 403, function(err, res, body) {
+    assert.equal(JSON.parse(body)['error'].length, 1);
+    return assert.equal(JSON.parse(body)['error'][0], 'path write protected');
+  });
+
+  suite.discuss('copy recursively with 2 protected dir');
+
+  suite.post('/fs2http/copyRec', {
+    path: prefixPath + '/read-protected',
+    newpath: prefixPath + '/write-protected'
+  }).expect('chown route', 403, function(err, res, body) {
+    assert.equal(JSON.parse(body)['error'].length, 1);
+    return assert.equal(JSON.parse(body)['error'][0], 'path write protected');
+  }).undiscuss();
+
+  suite.discuss('copy recursively with only write protected dir');
+
+  suite.post('/fs2http/copyRec', {
+    path: prefixPath + '/read-allowed',
+    newpath: prefixPath + '/write-protected'
+  }).expect('chown route', 403, function(err, res, body) {
+    assert.equal(JSON.parse(body)['error'].length, 1);
+    return assert.equal(JSON.parse(body)['error'][0], 'path write protected');
+  }).undiscuss();
+
+  suite.discuss('copy recursively with only read protected dir');
+
+  suite.post('/fs2http/copyRec', {
+    path: prefixPath + '/read-protected',
+    newpath: prefixPath + '/write-allowed'
+  }).expect('chown route', 403, function(err, res, body) {
     assert.equal(JSON.parse(body)['error'].length, 1);
     return assert.equal(JSON.parse(body)['error'][0], 'path read protected');
   }).undiscuss();
