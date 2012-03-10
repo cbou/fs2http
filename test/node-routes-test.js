@@ -157,9 +157,9 @@
     path: prefixPath + '/readdir'
   }).expect('readdir route, with non-empty file', 200, function(err, res, body) {
     body = JSON.parse(body);
-    assert.equal(body['files'].length, 2);
-    assert.include(body['files'], 'empty');
-    return assert.include(body['files'], 'file');
+    assert.equal(body['contents'].length, 2);
+    assert.include(body['contents'], 'empty');
+    return assert.include(body['contents'], 'file');
   });
 
   suite.discuss('with non empty directory').post('/fs2http/rename', {

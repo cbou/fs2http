@@ -54,12 +54,15 @@ unsafeProtection = (req, res, path, callback) ->
 withoutPathUpdate = (req, res, path, callback) ->
 	callback(path)
 
+middleware = (req, res, next) ->
+	next()
+
 fs2http.protections = {}
-fs2http.protections.read = unsafeProtection;
-fs2http.protections.write = unsafeProtection;
+fs2http.protections.read = unsafeProtection
+fs2http.protections.write = unsafeProtection
 
-fs2http.updatePath = withoutPathUpdate;
-
+fs2http.updatePath = withoutPathUpdate
+fs2http.middleware = middleware
 ###
  * Add the app
 ###
@@ -69,28 +72,28 @@ fs2http.use = (app) ->
 	app.fs2http = fs2http
 	
 	# from node
-	fs2http.app.post fs2http.options.path.rename, fs2http.routes.rename
-	fs2http.app.post fs2http.options.path.chown, fs2http.routes.chown
-	fs2http.app.post fs2http.options.path.chmod, fs2http.routes.chmod
-	fs2http.app.get fs2http.options.path.stat, fs2http.routes.stat
-	fs2http.app.del fs2http.options.path.rmdir, fs2http.routes.rmdir
-	fs2http.app.post fs2http.options.path.mkdir, fs2http.routes.mkdir
-	fs2http.app.get fs2http.options.path.readdir, fs2http.routes.readdir
-	fs2http.app.post fs2http.options.path.utimes, fs2http.routes.utimes
-	fs2http.app.get fs2http.options.path.readFile, fs2http.routes.readFile
-	fs2http.app.post fs2http.options.path.writeFile, fs2http.routes.writeFile
-	fs2http.app.post fs2http.options.path.symlink, fs2http.routes.symlink
-	fs2http.app.del fs2http.options.path.unlink, fs2http.routes.unlink
-	fs2http.app.get fs2http.options.path.readlink, fs2http.routes.readlink
-	fs2http.app.get fs2http.options.path.exists, fs2http.routes.exists
+	fs2http.app.post fs2http.options.path.rename, fs2http.middleware, fs2http.routes.rename
+	fs2http.app.post fs2http.options.path.chown, fs2http.middleware, fs2http.routes.chown
+	fs2http.app.post fs2http.options.path.chmod, fs2http.middleware, fs2http.routes.chmod
+	fs2http.app.get fs2http.options.path.stat, fs2http.middleware, fs2http.routes.stat
+	fs2http.app.del fs2http.options.path.rmdir, fs2http.middleware, fs2http.routes.rmdir
+	fs2http.app.post fs2http.options.path.mkdir, fs2http.middleware, fs2http.routes.mkdir
+	fs2http.app.get fs2http.options.path.readdir, fs2http.middleware, fs2http.routes.readdir
+	fs2http.app.post fs2http.options.path.utimes, fs2http.middleware, fs2http.routes.utimes
+	fs2http.app.get fs2http.options.path.readFile, fs2http.middleware, fs2http.routes.readFile
+	fs2http.app.post fs2http.options.path.writeFile, fs2http.middleware, fs2http.routes.writeFile
+	fs2http.app.post fs2http.options.path.symlink, fs2http.middleware, fs2http.routes.symlink
+	fs2http.app.del fs2http.options.path.unlink, fs2http.middleware, fs2http.routes.unlink
+	fs2http.app.get fs2http.options.path.readlink, fs2http.middleware, fs2http.routes.readlink
+	fs2http.app.get fs2http.options.path.exists, fs2http.middleware, fs2http.routes.exists
 
 	# recursive routes
-	fs2http.app.post fs2http.options.path.chownRec, fs2http.routes.chownRec
-	fs2http.app.post fs2http.options.path.chmodRec, fs2http.routes.chmodRec
-	fs2http.app.del fs2http.options.path.rmRec, fs2http.routes.rmRec
-	fs2http.app.post fs2http.options.path.copyRec, fs2http.routes.copyRec
+	fs2http.app.post fs2http.options.path.chownRec, fs2http.middleware, fs2http.routes.chownRec
+	fs2http.app.post fs2http.options.path.chmodRec, fs2http.middleware, fs2http.routes.chmodRec
+	fs2http.app.del fs2http.options.path.rmRec, fs2http.middleware, fs2http.routes.rmRec
+	fs2http.app.post fs2http.options.path.copyRec, fs2http.middleware, fs2http.routes.copyRec
 
 	# custom
-	fs2http.app.get fs2http.options.path.ls, fs2http.routes.ls
+	fs2http.app.get fs2http.options.path.ls, fs2http.middleware, fs2http.routes.ls
 
 exports = module.exports = fs2http;

@@ -21,7 +21,7 @@ module.exports = (req, res) ->
           if err
             utils.errorToResult(result, err, res)
 
-          result['files'] = files;
+          result['contents'] = files;
 
           res.send result
 
