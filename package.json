@@ -1,7 +1,7 @@
 {
   "name": "fs2http",
   "description": "Creates Express routes to make filesystem manipulation possible",
-  "version": "0.0.7",
+  "version": "0.0.8",
   "author": "Charles Bourasseau <charles.bourasseau@gmail.com>",
   "contributors": [
   ],
