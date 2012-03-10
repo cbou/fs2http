@@ -71,6 +71,7 @@
     path: prefixPath + '/write-protected',
     mode: '0777'
   }).expect('chmod route', 403, function(err, res, body) {
+    body = JSON.parse(body);
     assert.equal(body['error'].length, 1);
     return assert.equal(body['error'][0], 'path write protected');
   });
@@ -80,6 +81,7 @@
     uid: fs.statSync(prefixPath)['uid'],
     gid: newGid
   }).expect('chown route', 403, function(err, res, body) {
+    body = JSON.parse(body);
     assert.equal(body['error'].length, 1);
     return assert.equal(body['error'][0], 'path write protected');
   });
@@ -87,6 +89,7 @@
   suite.post('/fs2http/mkdir', {
     path: prefixPath + '/write-protected'
   }).expect('mkdir route', 403, function(err, res, body) {
+    body = JSON.parse(body);
     assert.equal(body['error'].length, 1);
     return assert.equal(body['error'][0], 'path write protected');
   });
@@ -95,6 +98,7 @@
     path: prefixPath + '/read-protected/file',
     encoding: 'utf-8'
   }).expect('readFile route, with non-empty file', 403, function(err, res, body) {
+    body = JSON.parse(body);
     assert.equal(body['error'].length, 1);
     return assert.equal(body['error'][0], 'path read protected');
   });
@@ -102,6 +106,7 @@
   suite.get('/fs2http/readdir', {
     path: prefixPath + '/read-protected'
   }).expect('readdir route, with non-empty file', 403, function(err, res, body) {
+    body = JSON.parse(body);
     assert.equal(body['error'].length, 1);
     return assert.equal(body['error'][0], 'path read protected');
   });
@@ -110,6 +115,7 @@
     path1: prefixPath + '/write-protected/rename/file',
     path2: prefixPath + '/write-protected/file'
   }).expect('rename route', 403, function(err, res, body) {
+    body = JSON.parse(body);
     assert.equal(body['error'].length, 1);
     return assert.equal(body['error'][0], 'path write protected');
   }).undiscuss();
@@ -117,6 +123,7 @@
   suite.del('/fs2http/rmdir', {
     path: prefixPath + '/write-protected'
   }).expect('rmdir route', 403, function(err, res, body) {
+    body = JSON.parse(body);
     assert.equal(body['error'].length, 1);
     return assert.equal(body['error'][0], 'path write protected');
   });
@@ -124,6 +131,7 @@
   suite.get('/fs2http/stat', {
     path: prefixPath + '/read-protected'
   }).expect('stat route', 403, function(err, res, body) {
+    body = JSON.parse(body);
     assert.equal(body['error'].length, 1);
     return assert.equal(body['error'][0], 'path read protected');
   });
@@ -133,6 +141,7 @@
     atime: 104321,
     mtime: 654231
   }).expect('utimes route', 403, function(err, res, body) {
+    body = JSON.parse(body);
     assert.equal(body['error'].length, 1);
     return assert.equal(body['error'][0], 'path write protected');
   });
@@ -141,6 +150,7 @@
     path: prefixPath + '/write-protected/file',
     data: 'file'
   }).expect('writeFile route, with data', 403, function(err, res, body) {
+    body = JSON.parse(body);
     assert.equal(body['error'].length, 1);
     return assert.equal(body['error'][0], 'path write protected');
   }).undiscuss();
@@ -149,6 +159,7 @@
     path: prefixPath + '/write-protected/symlink/file',
     link: prefixPath + '/write-protected/linkfile'
   }).expect('link route', 403, function(err, res, body) {
+    body = JSON.parse(body);
     assert.equal(body['error'].length, 1);
     return assert.equal(body['error'][0], 'path write protected');
   }).undiscuss();
@@ -156,6 +167,7 @@
   suite.discuss('unlink a file').del('/fs2http/unlink', {
     path: prefixPath + '/write-protected/unlink/file'
   }).expect('unlink route', 403, function(err, res, body) {
+    body = JSON.parse(body);
     assert.equal(body['error'].length, 1);
     return assert.equal(body['error'][0], 'path write protected');
   }).undiscuss();
@@ -163,6 +175,7 @@
   suite.discuss('readlink a dir link').get('/fs2http/readlink', {
     path: prefixPath + '/read-protected/readlink/linkdir'
   }).expect('readlink route', 403, function(err, res, body) {
+    body = JSON.parse(body);
     assert.equal(body['error'].length, 1);
     return assert.equal(body['error'][0], 'path read protected');
   }).undiscuss();
@@ -170,6 +183,7 @@
   suite.discuss('exists a file').get('/fs2http/exists', {
     path: prefixPath + '/read-protected/exists/file'
   }).expect('exists route', 403, function(err, res, body) {
+    body = JSON.parse(body);
     assert.equal(body['error'].length, 1);
     return assert.equal(body['error'][0], 'path read protected');
   }).undiscuss();
@@ -178,6 +192,7 @@
     path: prefixPath + '/write-protected',
     mode: '0777'
   }).expect('chmod route', 403, function(err, res, body) {
+    body = JSON.parse(body);
     assert.equal(body['error'].length, 1);
     return assert.equal(body['error'][0], 'path write protected');
   });
@@ -187,6 +202,7 @@
     uid: fs.statSync(prefixPath)['uid'],
     gid: newGid
   }).expect('chown route', 403, function(err, res, body) {
+    body = JSON.parse(body);
     assert.equal(body['error'].length, 1);
     return assert.equal(body['error'][0], 'path write protected');
   });
@@ -194,6 +210,7 @@
   suite.del('/fs2http/rmRec', {
     path: prefixPath + '/write-protected'
   }).expect('chmod route', 403, function(err, res, body) {
+    body = JSON.parse(body);
     assert.equal(body['error'].length, 1);
     return assert.equal(body['error'][0], 'path write protected');
   });
@@ -204,6 +221,7 @@
     path: prefixPath + '/read-protected',
     newpath: prefixPath + '/write-protected'
   }).expect('chown route', 403, function(err, res, body) {
+    body = JSON.parse(body);
     assert.equal(body['error'].length, 1);
     return assert.equal(body['error'][0], 'path write protected');
   }).undiscuss();
@@ -214,6 +232,7 @@
     path: prefixPath + '/read-allowed',
     newpath: prefixPath + '/write-protected'
   }).expect('chown route', 403, function(err, res, body) {
+    body = JSON.parse(body);
     assert.equal(body['error'].length, 1);
     return assert.equal(body['error'][0], 'path write protected');
   }).undiscuss();
@@ -224,6 +243,7 @@
     path: prefixPath + '/read-protected',
     newpath: prefixPath + '/write-allowed'
   }).expect('chown route', 403, function(err, res, body) {
+    body = JSON.parse(body);
     assert.equal(body['error'].length, 1);
     return assert.equal(body['error'][0], 'path read protected');
   }).undiscuss();

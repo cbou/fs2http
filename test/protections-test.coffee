@@ -52,6 +52,7 @@ suite.discuss("When trying fs2http node routes")
     path : prefixPath + '/write-protected'
     mode : '0777'
   .expect('chmod route', 403, (err, res, body) ->
+    body = JSON.parse body
     assert.equal body['error'].length, 1
     assert.equal body['error'][0], 'path write protected'
   )
@@ -61,6 +62,7 @@ suite.discuss("When trying fs2http node routes")
     uid : fs.statSync(prefixPath)['uid']
     gid : newGid
   .expect('chown route', 403, (err, res, body) ->
+    body = JSON.parse body
     assert.equal body['error'].length, 1
     assert.equal body['error'][0], 'path write protected'
   )
@@ -68,6 +70,7 @@ suite.discuss("When trying fs2http node routes")
   suite.post '/fs2http/mkdir',
     path : prefixPath + '/write-protected'
   .expect('mkdir route', 403, (err, res, body) ->
+    body = JSON.parse body
     assert.equal body['error'].length, 1
     assert.equal body['error'][0], 'path write protected'
   )
@@ -76,6 +79,7 @@ suite.discuss("When trying fs2http node routes")
     path : prefixPath + '/read-protected/file'
     encoding : 'utf-8'
   .expect('readFile route, with non-empty file', 403, (err, res, body) ->
+    body = JSON.parse body
     assert.equal body['error'].length, 1
     assert.equal body['error'][0], 'path read protected'
   )
@@ -83,6 +87,7 @@ suite.discuss("When trying fs2http node routes")
   suite.get '/fs2http/readdir',
     path : prefixPath + '/read-protected'
   .expect('readdir route, with non-empty file', 403, (err, res, body) ->
+    body = JSON.parse body
     assert.equal body['error'].length, 1
     assert.equal body['error'][0], 'path read protected'
   )
@@ -92,6 +97,7 @@ suite.discuss("When trying fs2http node routes")
     path1 : prefixPath + '/write-protected/rename/file'
     path2 : prefixPath + '/write-protected/file'
   .expect('rename route', 403, (err, res, body) ->
+    body = JSON.parse body
     assert.equal body['error'].length, 1
     assert.equal body['error'][0], 'path write protected'
   )
@@ -100,6 +106,7 @@ suite.discuss("When trying fs2http node routes")
   suite.del '/fs2http/rmdir',
     path : prefixPath + '/write-protected'
   .expect('rmdir route', 403, (err, res, body) ->
+    body = JSON.parse body
     assert.equal body['error'].length, 1
     assert.equal body['error'][0], 'path write protected'
   )
@@ -107,6 +114,7 @@ suite.discuss("When trying fs2http node routes")
   suite.get '/fs2http/stat',
     path : prefixPath + '/read-protected'
   .expect('stat route', 403, (err, res, body) ->
+    body = JSON.parse body
     assert.equal body['error'].length, 1
     assert.equal body['error'][0], 'path read protected'
   )
@@ -116,6 +124,7 @@ suite.discuss("When trying fs2http node routes")
     atime : 104321
     mtime : 654231
   .expect('utimes route', 403, (err, res, body) ->
+    body = JSON.parse body
     assert.equal body['error'].length, 1
     assert.equal body['error'][0], 'path write protected'
   )
@@ -125,6 +134,7 @@ suite.discuss("When trying fs2http node routes")
     path : prefixPath + '/write-protected/file'
     data : 'file'
   .expect('writeFile route, with data', 403, (err, res, body) ->
+    body = JSON.parse body
     assert.equal body['error'].length, 1
     assert.equal body['error'][0], 'path write protected'
   )
@@ -135,6 +145,7 @@ suite.discuss("When trying fs2http node routes")
     path : prefixPath + '/write-protected/symlink/file'
     link : prefixPath + '/write-protected/linkfile'
   .expect('link route', 403, (err, res, body) ->
+    body = JSON.parse body
     assert.equal body['error'].length, 1
     assert.equal body['error'][0], 'path write protected'
   )
@@ -144,6 +155,7 @@ suite.discuss("When trying fs2http node routes")
   .del '/fs2http/unlink',
     path : prefixPath + '/write-protected/unlink/file'
   .expect('unlink route', 403, (err, res, body) ->
+    body = JSON.parse body
     assert.equal body['error'].length, 1
     assert.equal body['error'][0], 'path write protected'
   )
@@ -153,6 +165,7 @@ suite.discuss("When trying fs2http node routes")
   .get '/fs2http/readlink',
     path : prefixPath + '/read-protected/readlink/linkdir'
   .expect('readlink route', 403, (err, res, body) ->
+    body = JSON.parse body
     assert.equal body['error'].length, 1
     assert.equal body['error'][0], 'path read protected'
   )
@@ -162,6 +175,7 @@ suite.discuss("When trying fs2http node routes")
   .get '/fs2http/exists',
     path : prefixPath + '/read-protected/exists/file'
   .expect('exists route', 403, (err, res, body) ->
+    body = JSON.parse body
     assert.equal body['error'].length, 1
     assert.equal body['error'][0], 'path read protected'
   )
@@ -171,6 +185,7 @@ suite.discuss("When trying fs2http node routes")
     path : prefixPath + '/write-protected'
     mode : '0777'
   .expect('chmod route', 403, (err, res, body) ->
+    body = JSON.parse body
     assert.equal body['error'].length, 1
     assert.equal body['error'][0], 'path write protected'
   )
@@ -179,6 +194,7 @@ suite.discuss("When trying fs2http node routes")
     uid : fs.statSync(prefixPath)['uid']
     gid : newGid
   .expect('chown route', 403, (err, res, body) ->
+    body = JSON.parse body
     assert.equal body['error'].length, 1
     assert.equal body['error'][0], 'path write protected'
   )
@@ -186,6 +202,7 @@ suite.discuss("When trying fs2http node routes")
   suite.del '/fs2http/rmRec',
     path : prefixPath + '/write-protected'
   .expect('chmod route', 403, (err, res, body) ->
+    body = JSON.parse body
     assert.equal body['error'].length, 1
     assert.equal body['error'][0], 'path write protected'
   )
@@ -195,6 +212,7 @@ suite.discuss("When trying fs2http node routes")
     path : prefixPath + '/read-protected'
     newpath : prefixPath + '/write-protected'
   .expect('chown route', 403, (err, res, body) ->
+    body = JSON.parse body
     assert.equal body['error'].length, 1
     assert.equal body['error'][0], 'path write protected'
   )
@@ -205,6 +223,7 @@ suite.discuss("When trying fs2http node routes")
     path : prefixPath + '/read-allowed'
     newpath : prefixPath + '/write-protected'
   .expect('chown route', 403, (err, res, body) ->
+    body = JSON.parse body
     assert.equal body['error'].length, 1
     assert.equal body['error'][0], 'path write protected'
   )
@@ -215,6 +234,7 @@ suite.discuss("When trying fs2http node routes")
     path : prefixPath + '/read-protected'
     newpath : prefixPath + '/write-allowed'
   .expect('chown route', 403, (err, res, body) ->
+    body = JSON.parse body
     assert.equal body['error'].length, 1
     assert.equal body['error'][0], 'path read protected'
   )
