@@ -9,18 +9,20 @@ module.exports = (req, res) ->
 
   result = {}
 
-  writeProtection = utils.writeProtection(req, res, path)
+  utils.updatePath req, res, path, (path) ->
+    utils.updatePath req, res, link, (link) ->
+      writeProtection = utils.writeProtection(req, res, path)
 
-  sendResult = (err) ->
-    if (err)
-      utils.forbiddenToResult result, err, res
-      res.send result
+      sendResult = (err) ->
+        if (err)
+          utils.forbiddenToResult result, err, res
+          res.send result
 
-    else
-      fs.symlink path, link, type, (err) ->
-        if err
-          utils.errorToResult(result, err, res)
+        else
+          fs.symlink path, link, type, (err) ->
+            if err
+              utils.errorToResult(result, err, res)
 
-        res.send result
+            res.send result
 
-  step writeProtection, sendResult
+      step writeProtection, sendResult

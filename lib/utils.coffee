@@ -22,6 +22,9 @@ utils.writeProtection = (req, res, path) ->
     protections.write req, res, path, callback
     undefined
 
+utils.updatePath = (req, res, path, callback) ->
+  req.app.fs2http.updatePath req, res, path, callback
+
 utils.forbiddenToResult = (result, err, res) ->
   if !util.isArray result['error']
     result['error'] = []

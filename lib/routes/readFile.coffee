@@ -8,19 +8,20 @@ module.exports = (req, res) ->
 
   result = {}
 
-  readProtection = utils.readProtection(req, res, path)
+  utils.updatePath req, res, path, (path) ->
+    readProtection = utils.readProtection(req, res, path)
 
-  sendResult = (err) ->
-    if (err)
-      utils.forbiddenToResult result, err, res
-      res.send result
-
-    else
-      fs.readFile path, encoding, (err, data) ->
-        if err
-          utils.errorToResult(result, err, res)
-
-        result['data'] = data;
+    sendResult = (err) ->
+      if (err)
+        utils.forbiddenToResult result, err, res
         res.send result
 
-  step readProtection, sendResult
+      else
+        fs.readFile path, encoding, (err, data) ->
+          if err
+            utils.errorToResult(result, err, res)
+
+          result['data'] = data;
+          res.send result
+
+    step readProtection, sendResult

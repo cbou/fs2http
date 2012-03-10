@@ -8,20 +8,21 @@ module.exports = (req, res) ->
 
   result = {}
 
-  readProtection = utils.readProtection(req, res, path)
+  utils.updatePath req, res, path, (path) ->
+    readProtection = utils.readProtection(req, res, path)
 
-  sendResult = (err) ->
-    if (err)
-      utils.forbiddenToResult result, err, res
-      res.send result
-
-    else
-      fs.readdir path, (err, files) ->
-        if err
-          utils.errorToResult(result, err, res)
-
-        result['files'] = files;
-
+    sendResult = (err) ->
+      if (err)
+        utils.forbiddenToResult result, err, res
         res.send result
 
-  step readProtection, sendResult
+      else
+        fs.readdir path, (err, files) ->
+          if err
+            utils.errorToResult(result, err, res)
+
+          result['files'] = files;
+
+          res.send result
+
+    step readProtection, sendResult
