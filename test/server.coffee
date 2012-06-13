@@ -6,8 +6,13 @@ app = module.exports = express.createServer()
 app.configure ->
   app.use express.bodyParser()
 
-fs2http.use app
+# method override example
+fs2http.routes.chmod.method = 'put'
 
+# url override example
+fs2http.routes.chmod.url = '/fs2http/customChmodUrl'
+
+# read protection example
 fs2http.protections.read = (req, res, path, callback) ->
   regex = /\/tmp\/fs2http\/protection\/read-protected/g;
   setTimeout ()-> 
@@ -18,6 +23,7 @@ fs2http.protections.read = (req, res, path, callback) ->
   , 1000
   undefined
 
+# write protection example
 fs2http.protections.write = (req, res, path, callback) ->
   regex = /\/tmp\/fs2http\/protection\/write-protected/g;
   if regex.test(path)
@@ -25,6 +31,8 @@ fs2http.protections.write = (req, res, path, callback) ->
   else
     callback()
   undefined
+
+fs2http.use app
 
 module.export = app
 

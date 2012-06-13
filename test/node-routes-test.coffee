@@ -44,7 +44,7 @@ suite
   .use("localhost", 3000)
   .setHeader("Content-Type", "application/json")
   
-  .post '/fs2http/chmod',
+  .put '/fs2http/customChmodUrl',
     path : tmpFixturesPath + '/chmod'
     mode : '0777'
   .expect('chmod route', 200, (err, res, body) ->

@@ -2,26 +2,29 @@ fs = require 'fs'
 step = require 'step'
 utils = require '../utils'
 
-module.exports = (req, res) ->
-  path = req.query.path
-  encoding = if req.query.encoding then req.query.encoding else null
+module.exports = 
+  method: 'get'
+  url: '/fs2http/readFile'
+  function: (req, res) ->
+    path = req.query.path
+    encoding = if req.query.encoding then req.query.encoding else null
 
-  result = {}
+    result = {}
 
-  utils.updatePath req, res, path, (path) ->
-    readProtection = utils.readProtection(req, res, path)
+    utils.updatePath req, res, path, (path) ->
+      readProtection = utils.readProtection(req, res, path)
 
-    sendResult = (err) ->
-      if (err)
-        utils.forbiddenToResult result, err, res
-        res.send result
-
-      else
-        fs.readFile path, encoding, (err, data) ->
-          if err
-            utils.errorToResult(result, err, res)
-
-          result['data'] = data;
+      sendResult = (err) ->
+        if (err)
+          utils.forbiddenToResult result, err, res
           res.send result
 
-    step readProtection, sendResult
+        else
+          fs.readFile path, encoding, (err, data) ->
+            if err
+              utils.errorToResult(result, err, res)
+
+            result['data'] = data;
+            res.send result
+
+      step readProtection, sendResult

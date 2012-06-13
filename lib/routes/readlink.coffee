@@ -2,26 +2,29 @@ fs = require 'fs'
 step = require 'step'
 utils = require '../utils'
 
-module.exports = (req, res) ->
-  path = req.query.path
+module.exports = 
+  method: 'get'
+  url: '/fs2http/readlink'
+  function: (req, res) ->
+    path = req.query.path
 
-  result = {}
+    result = {}
 
-  utils.updatePath req, res, path, (path) ->
-    readProtection = utils.readProtection(req, res, path)
+    utils.updatePath req, res, path, (path) ->
+      readProtection = utils.readProtection(req, res, path)
 
-    sendResult = (err) ->
-      if (err)
-        utils.forbiddenToResult result, err, res
-        res.send result
-
-      else
-        fs.readlink path, (err, linkString) ->
-          if err
-            utils.errorToResult(result, err, res)
-
-          result['linkString'] = linkString;
-
+      sendResult = (err) ->
+        if (err)
+          utils.forbiddenToResult result, err, res
           res.send result
 
-    step readProtection, sendResult
+        else
+          fs.readlink path, (err, linkString) ->
+            if err
+              utils.errorToResult(result, err, res)
+
+            result['linkString'] = linkString;
+
+            res.send result
+
+      step readProtection, sendResult

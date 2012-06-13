@@ -30,7 +30,7 @@ suite.discuss("When trying fs2http node routes")
   .use("localhost", 3000)
   .setHeader("Content-Type", "application/json")
 
-  suite.post '/fs2http/chmod',
+  suite.put '/fs2http/customChmodUrl',
     path : tmpFixturesPath + '/write-protected'
     mode : '0777'
   .expect('chmod route', 403, (err, res, body) ->
