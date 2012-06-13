@@ -26,200 +26,182 @@ wrench.copyDirSyncRecursive __dirname + '/fixtures/' + testName, config.prefixPa
 
 fs.symlinkSync tmpFixturesPath + '/read-protected/readlink/dir', tmpFixturesPath + '/read-protected/readlink/linkdir'
 
-suite.discuss("When trying fs2http node routes")
-  .use("localhost", 3000)
-  .setHeader("Content-Type", "application/json")
+suite
+  .discuss('When trying fs2http node routes')
+  .use('localhost', 3000)
+  .setHeader('Content-Type', 'application/json')
 
-  suite.put '/fs2http/customChmodUrl',
+  .put '/fs2http/customChmodUrl',
     path : tmpFixturesPath + '/write-protected'
     mode : '0777'
-  .expect('chmod route', 403, (err, res, body) ->
+  .expect 'chmod route', 403, (err, res, body) ->
     body = JSON.parse body
     assert.equal body['error'].length, 1
     assert.equal body['error'][0], 'path write protected'
-  )
 
-  suite.post '/fs2http/chown',
+  .post '/fs2http/chown',
     path : tmpFixturesPath + '/write-protected'
     uid : fs.statSync(tmpFixturesPath)['uid']
     gid : newGid
-  .expect('chown route', 403, (err, res, body) ->
+  .expect 'chown route', 403, (err, res, body) ->
     body = JSON.parse body
     assert.equal body['error'].length, 1
     assert.equal body['error'][0], 'path write protected'
-  )
 
-  suite.post '/fs2http/mkdir',
+  .post '/fs2http/mkdir',
     path : tmpFixturesPath + '/write-protected'
-  .expect('mkdir route', 403, (err, res, body) ->
+  .expect 'mkdir route', 403, (err, res, body) ->
     body = JSON.parse body
     assert.equal body['error'].length, 1
     assert.equal body['error'][0], 'path write protected'
-  )
 
-  suite.get '/fs2http/readFile',
+  .get '/fs2http/readFile',
     path : tmpFixturesPath + '/read-protected/file'
     encoding : 'utf-8'
-  .expect('readFile route, with non-empty file', 403, (err, res, body) ->
+  .expect 'readFile route, with non-empty file', 403, (err, res, body) ->
     body = JSON.parse body
     assert.equal body['error'].length, 1
     assert.equal body['error'][0], 'path read protected'
-  )
 
-  suite.get '/fs2http/readdir',
+  .get '/fs2http/readdir',
     path : tmpFixturesPath + '/read-protected'
-  .expect('readdir route, with non-empty file', 403, (err, res, body) ->
+  .expect 'readdir route, with non-empty file', 403, (err, res, body) ->
     body = JSON.parse body
     assert.equal body['error'].length, 1
     assert.equal body['error'][0], 'path read protected'
-  )
 
-  suite.discuss('with non empty directory')
+  .discuss('with non empty directory')
   .post '/fs2http/rename',
     path1 : tmpFixturesPath + '/write-protected/rename/file'
     path2 : tmpFixturesPath + '/write-protected/file'
-  .expect('rename route', 403, (err, res, body) ->
+  .expect 'rename route', 403, (err, res, body) ->
     body = JSON.parse body
     assert.equal body['error'].length, 1
     assert.equal body['error'][0], 'path write protected'
-  )
   .undiscuss()
 
-  suite.del '/fs2http/rmdir',
+  .del '/fs2http/rmdir',
     path : tmpFixturesPath + '/write-protected'
-  .expect('rmdir route', 403, (err, res, body) ->
+  .expect 'rmdir route', 403, (err, res, body) ->
     body = JSON.parse body
     assert.equal body['error'].length, 1
     assert.equal body['error'][0], 'path write protected'
-  )
 
-  suite.get '/fs2http/stat',
+  .get '/fs2http/stat',
     path : tmpFixturesPath + '/read-protected'
-  .expect('stat route', 403, (err, res, body) ->
+  .expect 'stat route', 403, (err, res, body) ->
     body = JSON.parse body
     assert.equal body['error'].length, 1
     assert.equal body['error'][0], 'path read protected'
-  )
 
-  suite.post '/fs2http/utimes',
+  .post '/fs2http/utimes',
     path : tmpFixturesPath + '/write-protected'
     atime : 104321
     mtime : 654231
-  .expect('utimes route', 403, (err, res, body) ->
+  .expect 'utimes route', 403, (err, res, body) ->
     body = JSON.parse body
     assert.equal body['error'].length, 1
     assert.equal body['error'][0], 'path write protected'
-  )
 
-  suite.discuss('with empty data')
+  .discuss('with empty data')
   .post '/fs2http/writeFile',
     path : tmpFixturesPath + '/write-protected/file'
     data : 'file'
-  .expect('writeFile route, with data', 403, (err, res, body) ->
+  .expect 'writeFile route, with data', 403, (err, res, body) ->
     body = JSON.parse body
     assert.equal body['error'].length, 1
     assert.equal body['error'][0], 'path write protected'
-  )
   .undiscuss()
 
-  suite.discuss('link a file')
+  .discuss('link a file')
   .post '/fs2http/symlink',
     path : tmpFixturesPath + '/write-protected/symlink/file'
     link : tmpFixturesPath + '/write-protected/linkfile'
-  .expect('link route', 403, (err, res, body) ->
+  .expect 'link route', 403, (err, res, body) ->
     body = JSON.parse body
     assert.equal body['error'].length, 1
     assert.equal body['error'][0], 'path write protected'
-  )
   .undiscuss()
 
-  suite.discuss('unlink a file')
+  .discuss('unlink a file')
   .del '/fs2http/unlink',
     path : tmpFixturesPath + '/write-protected/unlink/file'
-  .expect('unlink route', 403, (err, res, body) ->
+  .expect 'unlink route', 403, (err, res, body) ->
     body = JSON.parse body
     assert.equal body['error'].length, 1
     assert.equal body['error'][0], 'path write protected'
-  )
   .undiscuss()
 
-  suite.discuss('readlink a dir link')
+  .discuss('readlink a dir link')
   .get '/fs2http/readlink',
     path : tmpFixturesPath + '/read-protected/readlink/linkdir'
-  .expect('readlink route', 403, (err, res, body) ->
+  .expect 'readlink route', 403, (err, res, body) ->
     body = JSON.parse body
     assert.equal body['error'].length, 1
     assert.equal body['error'][0], 'path read protected'
-  )
   .undiscuss()
 
-  suite.discuss('exists a file')
+  .discuss('exists a file')
   .get '/fs2http/exists',
     path : tmpFixturesPath + '/read-protected/exists/file'
-  .expect('exists route', 403, (err, res, body) ->
+  .expect 'exists route', 403, (err, res, body) ->
     body = JSON.parse body
     assert.equal body['error'].length, 1
     assert.equal body['error'][0], 'path read protected'
-  )
   .undiscuss()
 
-  suite.post '/fs2http/chmodRec',
+  .post '/fs2http/chmodRec',
     path : tmpFixturesPath + '/write-protected'
     mode : '0777'
-  .expect('chmod route', 403, (err, res, body) ->
+  .expect 'chmod route', 403, (err, res, body) ->
     body = JSON.parse body
     assert.equal body['error'].length, 1
     assert.equal body['error'][0], 'path write protected'
-  )
-  suite.post '/fs2http/chownRec',
+  
+  .post '/fs2http/chownRec',
     path : tmpFixturesPath + '/write-protected'
     uid : fs.statSync(tmpFixturesPath)['uid']
     gid : newGid
-  .expect('chown route', 403, (err, res, body) ->
+  .expect 'chown route', 403, (err, res, body) ->
     body = JSON.parse body
     assert.equal body['error'].length, 1
     assert.equal body['error'][0], 'path write protected'
-  )
 
-  suite.del '/fs2http/rmRec',
+  .del '/fs2http/rmRec',
     path : tmpFixturesPath + '/write-protected'
-  .expect('chmod route', 403, (err, res, body) ->
+  .expect 'chmod route', 403, (err, res, body) ->
     body = JSON.parse body
     assert.equal body['error'].length, 1
     assert.equal body['error'][0], 'path write protected'
-  )
 
-  suite.discuss('copy recursively with 2 protected dir')
+  .discuss('copy recursively with 2 protected dir')
   suite.post '/fs2http/copyRec',
     path : tmpFixturesPath + '/read-protected'
     newpath : tmpFixturesPath + '/write-protected'
-  .expect('chown route', 403, (err, res, body) ->
+  .expect 'chown route', 403, (err, res, body) ->
     body = JSON.parse body
     assert.equal body['error'].length, 1
     assert.equal body['error'][0], 'path write protected'
-  )
   .undiscuss()
 
-  suite.discuss('copy recursively with only write protected dir')
-  suite.post '/fs2http/copyRec',
+  .discuss('copy recursively with only write protected dir')
+  .post '/fs2http/copyRec',
     path : tmpFixturesPath + '/read-allowed'
     newpath : tmpFixturesPath + '/write-protected'
-  .expect('chown route', 403, (err, res, body) ->
+  .expect 'chown route', 403, (err, res, body) ->
     body = JSON.parse body
     assert.equal body['error'].length, 1
     assert.equal body['error'][0], 'path write protected'
-  )
   .undiscuss()
 
   suite.discuss('copy recursively with only read protected dir')
   suite.post '/fs2http/copyRec',
     path : tmpFixturesPath + '/read-protected'
     newpath : tmpFixturesPath + '/write-allowed'
-  .expect('chown route', 403, (err, res, body) ->
+  .expect 'chown route', 403, (err, res, body) ->
     body = JSON.parse body
     assert.equal body['error'].length, 1
     assert.equal body['error'][0], 'path read protected'
-  )
   .undiscuss()
 
-suite.export module
+  .export module
