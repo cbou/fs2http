@@ -1,4 +1,3 @@
-u = require 'underscore'
 fs2http = {}
 
 fs2http.routes = require './routes'
