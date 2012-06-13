@@ -39,8 +39,6 @@ fs2http.options = {
 		'rm' : '/fs2http/rm'
 		'find' : '/fs2http/find'
 		'grep' : '/fs2http/grep'
-		'chmod' : '/fs2http/chmod'
-		'chown' : '/fs2http/chown'
 
 	# files
 	'files' :
