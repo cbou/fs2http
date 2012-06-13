@@ -34,7 +34,9 @@ Create following file:
     console.log("Express server listening on port %d in %s mode", app.address().port, app.settings.env);
 
 
-`fs2http.use(app);` creates routes the fs2http routes
+`fs2http.use(app);` creates routes the fs2http routes.
+
+Check `test/server.coffee` for advanced usage.
 
 Running Tests
 --------
