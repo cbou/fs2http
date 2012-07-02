@@ -16,6 +16,7 @@
       , "express": ">= 2.5.4"
       , "vows": "*"
       , "underscore": ">= 1.3.1"
+      , "markdox": ">= 0.0.6"
   },
   "keywords": ["fs2http", "filesystem", "http", "web", "route"],
   "repository": {
@@ -24,6 +25,9 @@
   },
   "main": "index",
   "license": "MIT",
-  "scripts": { "test": "./node_modules/vows/bin/vows test/*-test.coffee --spec" },
+  "scripts": { 
+    "test": "./node_modules/vows/bin/vows test/*-test.coffee --spec"
+    , "documentation": "node docs/generate.js"
+  },
   "engines": { "node": ">= 0.6.8 < 0.7.0" }
 }

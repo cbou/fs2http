@@ -2,6 +2,13 @@ fs = require 'fs'
 step = require 'step'
 utils = require '../utils'
 
+###*
+ * Make a directory
+ *
+ * @param {String} path The path
+ * @param {String} mode The mode (optional, default comes from Node.js)
+ * @name Mkdir route
+###
 module.exports = 
   method: 'post'
   url: '/fs2http/mkdir'

@@ -3,6 +3,14 @@ step = require 'step'
 utils = require '../utils'
 wrench = require 'wrench'
 
+###*
+ * change file owner and group recursively
+ *
+ * @param {String} path The path
+ * @param {String} uid The new uid
+ * @param {String} gid The new gid
+ * @name ChownRec route
+###
 module.exports =
   method: 'post'
   url: '/fs2http/chownRec'

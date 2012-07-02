@@ -2,6 +2,13 @@ fs = require 'fs'
 step = require 'step'
 utils = require '../utils'
 
+###*
+ * Rename a path
+ *
+ * @param {String} path1 The old path
+ * @param {String} path2 The new path
+ * @name Rename route
+###
 module.exports = 
   method: 'post'
   url: '/fs2http/rename'

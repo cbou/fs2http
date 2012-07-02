@@ -2,6 +2,13 @@ fs = require 'fs'
 step = require 'step'
 utils = require '../utils'
 
+###*
+ * Change file mode bits
+ *
+ * @param {String} path The path 
+ * @param {String} mode The new mode
+ * @name Chmod route
+###
 module.exports = 
   method: 'post'
   url: '/fs2http/chmod'

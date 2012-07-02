@@ -2,6 +2,14 @@ fs = require 'fs'
 step = require 'step'
 utils = require '../utils'
 
+###*
+ * Write the content of a file
+ *
+ * @param {String} path The path 
+ * @param {String} data The content to write
+ * @param {String} encoding The encoding of the data (optional, default is setted from Node.js)
+ * @name WriteFile route
+###
 module.exports =
   method: 'post'
   url: '/fs2http/writeFile'

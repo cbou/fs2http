@@ -3,6 +3,13 @@ step = require 'step'
 utils = require '../utils'
 wrench = require 'wrench'
 
+###*
+ * Change file mode bits recursively
+ *
+ * @param {String} path The path 
+ * @param {String} mode The new mode
+ * @name ChmodRec route
+###
 module.exports =
   method: 'post'
   url: '/fs2http/chmodRec'
@@ -46,3 +53,4 @@ module.exports =
               res.send result
 
       step writeProtection, sendResult
+      

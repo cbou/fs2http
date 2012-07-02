@@ -2,6 +2,12 @@ fs = require 'fs'
 step = require 'step'
 utils = require '../utils'
 
+###*
+ * Read a file
+ *
+ * @param {String} path The path
+ * @name ReadFile route
+###
 module.exports = 
   method: 'get'
   url: '/fs2http/readFile'

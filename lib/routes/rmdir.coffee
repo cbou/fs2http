@@ -2,6 +2,12 @@ fs = require 'fs'
 step = require 'step'
 utils = require '../utils'
 
+###*
+ * Remove empty directories
+ *
+ * @param {String} path The path
+ * @name Rmdir route
+###
 module.exports =
   method: 'del'
   url: '/fs2http/rmdir'

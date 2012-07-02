@@ -3,6 +3,12 @@ step = require 'step'
 utils = require '../utils'
 wrench = require 'wrench'
 
+###*
+ * Remove files and directories recursively
+ *
+ * @param {String} path The path
+ * @name RmRec route
+###
 module.exports =
   method: 'del'
   url: '/fs2http/rmRec'

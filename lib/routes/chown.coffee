@@ -2,6 +2,14 @@ fs = require 'fs'
 step = require 'step'
 utils = require '../utils'
 
+###*
+ * change file owner and group
+ *
+ * @param {String} path The path
+ * @param {String} uid The new uid
+ * @param {String} gid The new gid
+ * @name ChownRec route
+###
 module.exports =
   method: 'post'
   url: '/fs2http/chown'

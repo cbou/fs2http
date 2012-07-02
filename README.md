@@ -45,6 +45,13 @@ Run tests:
 
     npm test
 
+Documentation
+---
+
+Documentation is [here](https://github.com/cbou/fs2http/blob/master/docs/routes.md) and can be generate with:
+
+    $ npm run-script documentation
+
 License
 --------
 

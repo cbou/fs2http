@@ -2,6 +2,12 @@ path = require 'path'
 step = require 'step'
 utils = require '../utils'
 
+###*
+ * Test whether or not the given path exists
+ *
+ * @param {String} path The path
+ * @name Exists route
+###
 module.exports =
   method: 'get'
   url: '/fs2http/exists'

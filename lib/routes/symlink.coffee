@@ -2,6 +2,13 @@ fs = require 'fs'
 step = require 'step'
 utils = require '../utils'
 
+###*
+ * Make a new name for a file
+ *
+ * @param {String} link The destination 
+ * @param {String} path The path to link
+ * @name Symlink route
+###
 module.exports = 
   method: 'post'
   url: '/fs2http/symlink'

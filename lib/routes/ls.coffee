@@ -2,6 +2,12 @@ fs = require 'fs'
 util = require 'util'
 async = require 'async'
 
+###*
+ * Read a directory
+ *
+ * @param {String} path The path
+ * @name Ls route
+###
 module.exports =
   method: 'get'
   url: '/fs2http/ls'

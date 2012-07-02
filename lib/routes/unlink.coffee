@@ -2,6 +2,12 @@ fs = require 'fs'
 step = require 'step'
 utils = require '../utils'
 
+###*
+ * Call the unlink function to remove the specified file
+ *
+ * @param {String} path The path 
+ * @name Unlink route
+###
 module.exports =
   method: 'del'
   url: '/fs2http/unlink'

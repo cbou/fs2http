@@ -2,6 +2,12 @@ fs = require 'fs'
 step = require 'step'
 utils = require '../utils'
 
+###*
+ * Display file or file system status
+ *
+ * @param {String} path The path
+ * @name Stat route
+###
 module.exports =
   method: 'get'
   url: '/fs2http/stat'

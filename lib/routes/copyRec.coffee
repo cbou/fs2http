@@ -3,6 +3,13 @@ step = require 'step'
 utils = require '../utils'
 wrench = require 'wrench'
 
+###*
+ * Make a copy of a file or a directory recursively
+ *
+ * @param {String} path The path
+ * @param {String} newpath The new path
+ * @name CopyRec route
+###
 module.exports =
   method: 'post'
   url: '/fs2http/copyRec'
